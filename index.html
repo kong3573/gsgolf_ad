@@ -99,6 +99,19 @@
         </button>
       </div>
 
+      <!-- Storage Sub-tabs -->
+      <div class="flex space-x-2 border-b border-slate-800 pb-2 shrink-0">
+        <button id="tabStorageWeekly" class="px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/40">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>✨ 이번 주 자동 추천 (4종)</span>
+        </button>
+        <button id="tabStorageMy" class="px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800">
+          <i data-lucide="folder" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>내 저장 템플릿</span>
+          <span id="storageSubCount" class="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-300">0/20</span>
+        </button>
+      </div>
+
       <!-- Template List Container -->
       <div id="templateList" class="flex-1 overflow-y-auto space-y-2.5 pr-1">
         <!-- Dynamic Item Example -->
@@ -1644,16 +1657,48 @@ ${instaInputs.sub.value}
       storageModal.classList.remove('hidden');
     }
 
+    let currentStorageTab = 'weekly'; // 'weekly' or 'my'
+    let weeklyTemplatesCache = [];
+
+    const tabStorageWeekly = document.getElementById('tabStorageWeekly');
+    const tabStorageMy = document.getElementById('tabStorageMy');
+    const storageSubCount = document.getElementById('storageSubCount');
+
+    tabStorageWeekly.addEventListener('click', () => {
+      currentStorageTab = 'weekly';
+      tabStorageWeekly.className = 'px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/40';
+      tabStorageMy.className = 'px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800';
+      renderTemplateList();
+    });
+
+    tabStorageMy.addEventListener('click', () => {
+      currentStorageTab = 'my';
+      tabStorageMy.className = 'px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 bg-indigo-600/20 text-indigo-300 border border-indigo-500/40';
+      tabStorageWeekly.className = 'px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800';
+      renderTemplateList();
+    });
+
+    async function fetchWeeklyTemplates() {
+      try {
+        const resp = await fetch('weekly_templates.json?t=' + Date.now());
+        if (resp.ok) {
+          weeklyTemplatesCache = await resp.json();
+        }
+      } catch (e) {
+        console.log('Weekly templates fetch error:', e);
+      }
+    }
+
     function renderTemplateList() {
-      const list = getSavedTemplates();
+      const list = currentStorageTab === 'weekly' ? weeklyTemplatesCache : getSavedTemplates();
       templateList.innerHTML = '';
 
       if (list.length === 0) {
         templateList.innerHTML = `
           <div class="py-12 text-center text-slate-500 space-y-2">
             <i data-lucide="inbox" class="w-10 h-10 mx-auto text-slate-600"></i>
-            <p class="text-xs">저장된 템플릿이 없습니다.</p>
-            <p class="text-[11px] text-slate-600">입력창에서 문구를 작성하신 후 [현재 문구 저장]을 눌러보세요!</p>
+            <p class="text-xs">${currentStorageTab === 'weekly' ? '추천 템플릿을 불러오는 중입니다...' : '저장된 템플릿이 없습니다.'}</p>
+            <p class="text-[11px] text-slate-600">${currentStorageTab === 'weekly' ? '잠시 후 다시 시도해 주세요.' : '입력창에서 문구를 작성하신 후 [현재 문구 저장]을 눌러보세요!'}</p>
           </div>
         `;
         lucide.createIcons();
@@ -1661,7 +1706,7 @@ ${instaInputs.sub.value}
         return;
       }
 
-      list.forEach((item, idx) => {
+      list.forEach((item) => {
         let channelBadge = '';
         let summaryText = '';
 
@@ -1676,6 +1721,7 @@ ${instaInputs.sub.value}
           summaryText = `초청 대상: ${item.data.name || ''} | 미션: ${item.data.mission || ''}`;
         }
 
+        const isWeekly = currentStorageTab === 'weekly';
         const el = document.createElement('div');
         el.className = 'p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition flex items-center justify-between gap-3 shadow-md';
         el.innerHTML = `
@@ -1688,13 +1734,14 @@ ${instaInputs.sub.value}
             <p class="text-[11px] text-slate-400 truncate">${summaryText}</p>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
-            <button class="btn-load-tpl px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1 shadow-sm" data-id="${item.id}">
+            <button class="btn-load-tpl px-3 py-1.5 rounded-lg ${isWeekly ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-black' : 'bg-indigo-600 hover:bg-indigo-500 text-white font-bold'} text-xs transition flex items-center gap-1 shadow-sm" data-id="${item.id}" data-type="${isWeekly ? 'weekly' : 'my'}">
               <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
               <span>불러오기</span>
             </button>
+            ${!isWeekly ? `
             <button class="btn-del-tpl p-1.5 rounded-lg bg-slate-800 hover:bg-rose-950 hover:text-rose-400 text-slate-400 transition" data-id="${item.id}" title="삭제">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
+            </button>` : ''}
           </div>
         `;
         templateList.appendChild(el);
@@ -1702,7 +1749,11 @@ ${instaInputs.sub.value}
 
       // Bind dynamic buttons
       document.querySelectorAll('.btn-load-tpl').forEach(b => {
-        b.addEventListener('click', () => loadTemplateById(b.getAttribute('data-id')));
+        b.addEventListener('click', () => {
+          const type = b.getAttribute('data-type');
+          const id = b.getAttribute('data-id');
+          loadTemplateById(id, type);
+        });
       });
       document.querySelectorAll('.btn-del-tpl').forEach(b => {
         b.addEventListener('click', () => deleteTemplateById(b.getAttribute('data-id')));
@@ -1712,8 +1763,8 @@ ${instaInputs.sub.value}
       updateStorageBadges();
     }
 
-    function loadTemplateById(id) {
-      const list = getSavedTemplates();
+    function loadTemplateById(id, type = 'my') {
+      const list = type === 'weekly' ? weeklyTemplatesCache : getSavedTemplates();
       const item = list.find(t => t.id === id);
       if (!item) return;
 
@@ -1822,6 +1873,7 @@ ${instaInputs.sub.value}
     updateInstaLivePreview();
     updateInfLivePreview();
     updateStorageBadges();
+    fetchWeeklyTemplates();
   </script>
 </body>
 </html>
