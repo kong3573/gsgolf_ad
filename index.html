@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>광산골프 네이버 밴드 홍보 포스터 뷰어 & 에디터</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- html2canvas for Image Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=Black+Han+Sans&family=Noto+Sans+KR:wght@700;900&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+    .font-impact { font-family: 'Black Han Sans', sans-serif; }
+    .font-heavy { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; }
+    .band-green { color: #03c75a; }
+    .bg-band-green { background-color: #03c75a; }
+    .border-band-green { border-color: #03c75a; }
+    
+    /* Poster Container Shadow & Border */
+    .poster-preview {
+      width: 500px;
+      min-width: 500px;
+      height: 700px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body class="min-h-full flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <i data-lucide="flag" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white flex items-center gap-2">
+            광산골프 <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">네이버 밴드 홍보 포스터 에디터</span>
+          </h1>
+          <p class="text-xs text-slate-400">광산골프 밴드 & 타 골프 밴드 제휴 맞춤형 포스터 제작</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button id="btnCopyText" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="copy" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span id="btnCopyLabel">밴드 게시글 본문 복사</span>
+        </button>
+        <button id="btnDownloadPoster" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/30 flex items-center gap-1.5">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>포스터 이미지 저장 (PNG)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- Left: Customizer & Text Editor (5 cols) -->
+    <div class="lg:col-span-5 space-y-5">
+      
+      <!-- Target Band Category Switcher (Tabs) -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-2.5">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i>
+            홍보 대상 밴드 선택
+          </h2>
+          <span id="targetModeBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">광산골프 밴드 모드</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button id="tabMyBand" class="band-tab-btn p-3 rounded-xl border text-left transition flex items-center gap-2.5 bg-emerald-600/20 border-emerald-500 text-white shadow-md">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/30 flex items-center justify-center shrink-0">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold">광산골프 밴드</div>
+              <div class="text-[10px] text-slate-400">자체 밴드 가입자 전용</div>
+            </div>
+          </button>
+
+          <button id="tabOtherBand" class="band-tab-btn p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800/80 text-left transition flex items-center gap-2.5 text-slate-400 hover:text-slate-200">
+            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center shrink-0">
+              <i data-lucide="users" class="w-4 h-4 text-indigo-400"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200">타 골프 밴드 제휴</div>
+              <div class="text-[10px] text-slate-400">타 밴드/동호회 회원 초대</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Design Style Selector -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+        <h2 class="text-xs font-bold text-slate-300 flex items-center gap-2">
+          <i data-lucide="palette" class="w-4 h-4 text-emerald-400"></i>
+          포스터 디자인 시안 선택
+        </h2>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="style-btn p-2.5 rounded-xl border text-left transition text-xs font-semibold active-style bg-emerald-600/20 border-emerald-500 text-emerald-300" data-theme="style1">
+            <span class="block text-xs font-bold text-white mb-0.5">시안 1. 프리미엄 그린</span>
+            <span class="text-[10px] text-slate-400">실제 잔디 배경 & 골드 뱃지</span>
+          </button>
+          <button class="style-btn p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-400 hover:text-slate-200" data-theme="style2">
+            <span class="block text-xs font-bold text-white mb-0.5">시안 2. 네이버 밴드 그린</span>
+            <span class="text-[10px] text-slate-400">밴드 공식 시그니처 테마</span>
+          </button>
+          <button class="style-btn p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-400 hover:text-slate-200" data-theme="style3">
+            <span class="block text-xs font-bold text-white mb-0.5">시안 3. 캐릭터 스페셜</span>
+            <span class="text-[10px] text-slate-400">귀여운 캐릭터 & 파격 강조</span>
+          </button>
+          <button class="style-btn p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-400 hover:text-slate-200" data-theme="style4">
+            <span class="block text-xs font-bold text-white mb-0.5">시안 4. 다크 네온 임팩트</span>
+            <span class="text-[10px] text-slate-400">젊고 트렌디한 네온 컬러</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Text Inputs Form -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3.5">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <h2 class="text-xs font-bold text-slate-200 flex items-center gap-2">
+            <i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i>
+            포스터 문구 실시간 수정
+          </h2>
+          <button id="btnResetPreset" class="text-[11px] text-slate-400 hover:text-emerald-400 transition flex items-center gap-1">
+            <i data-lucide="rotate-ccw" class="w-3 h-3"></i> 기본 문구로 리셋
+          </button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          
+          <!-- Target Band Name Input (Highlight for Other Band Mode) -->
+          <div id="boxTargetBand" class="p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/40 space-y-1 transition-all">
+            <div class="flex items-center justify-between">
+              <label class="block font-bold text-indigo-300">
+                <i data-lucide="tag" class="w-3.5 h-3.5 inline mr-1"></i> 대상 밴드명 (타 골프 밴드 / 동호회 이름)
+              </label>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold">실시간 적용</span>
+            </div>
+            <input id="inputTargetBandName" type="text" value="광주전남 골프 매니아" placeholder="예: 광주전남 골프 매니아, 나이스샷 골프클럽 등" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-indigo-500/50 text-white font-bold focus:outline-none focus:border-indigo-400 transition" />
+            <p class="text-[10px] text-indigo-300/70">※ 입력하신 밴드명이 포스터의 뱃지, 헤드라인, 혜택 문구에 자동 반영됩니다.</p>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">상호명 / 연습장 명칭</label>
+            <input id="inputShopName" type="text" value="광산골프 어프로치 숏게임 연습장" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">상단 서브 타이틀 문구</label>
+            <input id="inputSubHeadline" type="text" value="네이버 밴드 회원 한정 특별 프로모션" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">헤드라인 (메인 타이틀)</label>
+            <input id="inputHeadline" type="text" value="네이버 밴드 가입자 단독 특급 혜택!" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">상단 뱃지 텍스트</label>
+            <input id="inputTopBadge" type="text" value="BAND ONLY" placeholder="예: BAND ONLY, PARTNER BAND" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+
+          <!-- Benefits / Offers Toggle & Inputs -->
+          <div class="space-y-3 pt-1">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">이벤트 & 혜택 항목 설정</div>
+
+            <!-- Benefit 01: Discount -->
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                  <input id="chkDiscount" type="checkbox" checked class="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-950 accent-emerald-500" />
+                  <span class="font-bold text-slate-200">할인 혜택 (혜택 1)</span>
+                </label>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">BENEFIT 01</span>
+              </div>
+              <div id="wrapDiscount" class="space-y-2">
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="col-span-1">
+                    <label class="block text-[11px] text-slate-400 mb-0.5">할인율 (%)</label>
+                    <input id="inputDiscountRate" type="text" value="20%" placeholder="예: 20%, 30%" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-100 font-bold focus:outline-none focus:border-emerald-500 transition text-center" />
+                  </div>
+                  <div class="col-span-2">
+                    <label class="block text-[11px] text-slate-400 mb-0.5">할인 타이틀 문구</label>
+                    <input id="inputDiscount" type="text" value="기존 요금 20% 특별 할인" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500 transition" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-0.5">보조 설명 문구</label>
+                  <input id="inputDiscountSub" type="text" value="밴드 가입 인증 시 전 코스 즉시 할인 적용" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-xs focus:outline-none focus:border-emerald-500 transition" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Benefit 02: Special Event (Customizable) -->
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                  <input id="chkEvent" type="checkbox" checked class="w-4 h-4 rounded text-amber-500 bg-slate-900 border-slate-700 focus:ring-amber-500 focus:ring-offset-slate-950 accent-amber-500" />
+                  <span class="font-bold text-slate-200">스페셜 이벤트 (혜택 2)</span>
+                </label>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">BENEFIT 02</span>
+              </div>
+              <div id="wrapEvent" class="space-y-2">
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="col-span-1">
+                    <label class="block text-[11px] text-slate-400 mb-0.5">강조 뱃지 문구</label>
+                    <input id="inputEventBadge" type="text" value="1 + 1" placeholder="예: 1+1, FREE, GIFT" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-100 font-bold focus:outline-none focus:border-amber-500 transition text-center" />
+                  </div>
+                  <div class="col-span-2">
+                    <label class="block text-[11px] text-slate-400 mb-0.5">이벤트 타이틀 문구</label>
+                    <input id="inputEvent" type="text" value="1+1 동반자 무료 입장!" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-100 focus:outline-none focus:border-amber-500 transition" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-0.5">보조 설명 문구</label>
+                  <input id="inputEventSub" type="text" value="함께 오면 1인 무료 or 1회 무료 증정" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-xs focus:outline-none focus:border-amber-500 transition" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Bonus Review Toggle & Input -->
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                  <input id="chkBonus" type="checkbox" checked class="w-4 h-4 rounded text-teal-500 bg-slate-900 border-slate-700 focus:ring-teal-500 focus:ring-offset-slate-950 accent-teal-500" />
+                  <span class="font-bold text-slate-200">추가 보너스 이벤트</span>
+                </label>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400">BONUS</span>
+              </div>
+              <div id="wrapBonus" class="space-y-1">
+                <input id="inputBonus" type="text" value="네이버 영수증 리뷰 작성 시 30분 무료 추가!" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-teal-500 transition" />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800 space-y-2">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">영업 시간</label>
+              <input id="inputHours" type="text" value="월~토 08:00 ~ 24:00 (자정까지) / 일 08:00 ~ 18:00" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-semibold text-slate-300 mb-1">전화번호</label>
+                <input id="inputPhone" type="text" value="062-454-7878" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-300 mb-1">위치 주소</label>
+                <input id="inputAddress" type="text" value="광산구 동곡상정길 42" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right: Poster Live Preview Canvas (7 cols) -->
+    <div class="lg:col-span-7 flex flex-col items-center justify-center space-y-4">
+      
+      <div class="flex items-center justify-between w-full max-w-[500px] text-xs text-slate-400">
+        <span class="flex items-center gap-1.5"><i data-lucide="eye" class="w-4 h-4 text-emerald-400"></i> 실시간 포스터 미리보기</span>
+        <span class="bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 text-[11px]">사이즈: 500 × 700 px (세로형)</span>
+      </div>
+
+      <!-- PREVIEW WRAPPER -->
+      <div id="posterCard" class="poster-preview rounded-3xl overflow-hidden relative flex flex-col justify-between select-none">
+
+        <!-- Theme 1: Premium Golf Green (Default) -->
+        <div id="theme1" class="theme-view absolute inset-0 flex flex-col justify-between p-7 bg-cover bg-center text-white" style="background-image: linear-gradient(180deg, rgba(6, 44, 28, 0.88) 0%, rgba(3, 20, 13, 0.95) 100%), url('assets/golf_green.jpg');">
+          <!-- Top Badge & Header -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-xs font-bold tracking-wide flex items-center gap-1">
+                ⛳ <span class="out-shop">광산골프 숏게임 연습장</span>
+              </span>
+              <span class="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-[11px] font-extrabold tracking-wider shadow out-top-badge">BAND ONLY</span>
+            </div>
+            
+            <div class="pt-2">
+              <p class="text-amber-300 font-bold text-sm tracking-wide out-subhead">네이버 밴드 회원 한정 특별 프로모션</p>
+              <h1 class="text-3xl font-black leading-tight tracking-tight text-white mt-1 out-head font-heavy">
+                네이버 밴드 가입자<br/><span class="text-emerald-400 underline decoration-amber-400 decoration-4 underline-offset-4">단독 특급 혜택!</span>
+              </h1>
+            </div>
+          </div>
+
+          <!-- Middle Main Highlight Offers -->
+          <div class="space-y-3 my-auto w-full">
+            <!-- Offer Box 1 (Discount) -->
+            <div class="offer-disc bg-gradient-to-r from-emerald-950/80 to-slate-900/90 border border-emerald-500/50 rounded-2xl p-4 shadow-xl flex items-center justify-between relative overflow-hidden backdrop-blur-md transition-all duration-300">
+              <div class="space-y-1 pr-2">
+                <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 text-[10px] font-black">BENEFIT 01</span>
+                <div class="text-xl font-black text-white out-disc">기존 요금 20% 특별 할인</div>
+                <p class="text-[11px] text-emerald-300/80 out-disc-sub">밴드 가입 인증 시 전 코스 즉시 할인 적용</p>
+              </div>
+              <div class="text-3xl font-black text-amber-400 font-impact text-right shrink-0">
+                <span class="out-disc-rate">20%</span><span class="text-base text-white block -mt-1"> OFF</span>
+              </div>
+            </div>
+
+            <!-- Offer Box 2 (Special Event) -->
+            <div class="offer-event bg-gradient-to-r from-amber-950/70 to-slate-900/90 border border-amber-500/50 rounded-2xl p-4 shadow-xl flex items-center justify-between relative overflow-hidden backdrop-blur-md transition-all duration-300">
+              <div class="space-y-1 pr-2">
+                <span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 text-[10px] font-black">BENEFIT 02</span>
+                <div class="text-xl font-black text-white out-event">1+1 동반자 무료 입장!</div>
+                <p class="text-[11px] text-amber-200/80 out-event-sub">함께 오면 1인 무료 or 1회 무료 증정</p>
+              </div>
+              <div class="text-2xl font-black text-emerald-400 font-impact text-right shrink-0 out-event-badge">1 + 1</div>
+            </div>
+
+            <!-- Bonus Review Badge -->
+            <div class="offer-bonus bg-slate-950/80 border border-slate-700/60 rounded-xl p-2.5 flex items-center gap-2 text-xs transition-all duration-300">
+              <span class="text-amber-400 text-base">🎁</span>
+              <span class="text-slate-200 font-semibold out-bonus">네이버 영수증 리뷰 작성 시 30분 무료 추가!</span>
+            </div>
+          </div>
+
+          <!-- Bottom Footer Info with Character -->
+          <div class="pt-3 border-t border-emerald-500/30 flex items-center justify-between">
+            <div class="space-y-1 text-[11px] text-slate-300">
+              <p class="flex items-center gap-1.5 font-medium">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span class="out-hours">월~토 08:00 ~ 24:00 / 일 08:00 ~ 18:00</span>
+              </p>
+              <p class="flex items-center gap-1.5 font-medium">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span class="out-addr">전남광주통합특별시 광산구 동곡상정길 42</span>
+              </p>
+              <p class="flex items-center gap-1.5 font-bold text-amber-300">
+                <i data-lucide="phone-call" class="w-3.5 h-3.5"></i>
+                예약/문의 : <span class="out-phone">062-454-7878</span>
+              </p>
+            </div>
+            <img src="assets/character.png?v=20260819" alt="캐릭터" class="w-16 h-16 object-contain drop-shadow-md" />
+          </div>
+        </div>
+
+        <!-- Theme 2: Naver Band Signature Green -->
+        <div id="theme2" class="theme-view absolute inset-0 hidden flex flex-col justify-between p-7 bg-[#03c75a] text-slate-900">
+          <div class="bg-white rounded-2xl p-6 shadow-2xl flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg bg-[#03c75a] text-white flex items-center justify-center font-black text-sm">B</div>
+                  <span class="font-extrabold text-xs text-slate-700 out-theme2-title">NAVER BAND MEMBER EVENT</span>
+                </div>
+                <span class="text-[11px] font-bold text-[#03c75a] bg-emerald-50 px-2 py-0.5 rounded-full out-shop">광산골프</span>
+              </div>
+              <div class="mt-4">
+                <h1 class="text-2xl font-black text-slate-900 leading-snug out-head font-heavy">
+                  네이버 밴드 가입자<br/><span class="text-[#03c75a]">단독 특급 혜택 안내</span>
+                </h1>
+                <p class="text-xs text-slate-500 mt-1 out-subhead">지금 밴드 가입 인증하고 특가 혜택을 받으세요!</p>
+              </div>
+            </div>
+
+            <div class="space-y-2.5 my-4">
+              <div class="offer-disc bg-slate-50 border-2 border-emerald-200 rounded-xl p-3.5 flex items-center justify-between transition-all duration-300">
+                <div class="pr-2">
+                  <span class="text-[10px] font-bold text-emerald-700">혜택 1</span>
+                  <div class="text-base font-extrabold text-slate-900 out-disc">기존 요금 20% 특별 할인</div>
+                  <p class="text-[10px] text-slate-500 out-disc-sub">밴드 가입 인증 시 전 코스 즉시 할인 적용</p>
+                </div>
+                <span class="text-2xl font-black text-[#03c75a] font-impact shrink-0 out-disc-rate">20% DC</span>
+              </div>
+
+              <div class="offer-event bg-slate-50 border-2 border-emerald-200 rounded-xl p-3.5 flex items-center justify-between transition-all duration-300">
+                <div class="pr-2">
+                  <span class="text-[10px] font-bold text-emerald-700">혜택 2</span>
+                  <div class="text-base font-extrabold text-slate-900 out-event">1+1 동반자 무료 입장!</div>
+                  <p class="text-[10px] text-slate-500 out-event-sub">함께 오면 1인 무료 or 1회 무료 증정</p>
+                </div>
+                <span class="text-2xl font-black text-[#03c75a] font-impact shrink-0 out-event-badge">1 + 1</span>
+              </div>
+
+              <div class="offer-bonus bg-amber-50 border border-amber-200 rounded-xl p-2.5 flex items-center gap-2 text-xs text-amber-900 font-semibold transition-all duration-300">
+                <span>🌟</span>
+                <span class="out-bonus">네이버 영수증 리뷰 작성 시 30분 무료 추가!</span>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600">
+              <div>
+                <p class="font-bold text-slate-800">📍 <span class="out-addr">광산구 동곡상정길 42</span></p>
+                <p class="text-slate-500">⏰ <span class="out-hours">월~토 08:00~24:00 / 일 08:00~18:00</span></p>
+                <p class="font-extrabold text-[#03c75a] mt-0.5">📞 문의: <span class="out-phone">062-454-7878</span></p>
+              </div>
+              <img src="assets/character.png?v=20260819" alt="캐릭터" class="w-14 h-14 object-contain" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Theme 3: Character & Special Deal -->
+        <div id="theme3" class="theme-view absolute inset-0 hidden flex flex-col justify-between p-7 bg-gradient-to-b from-amber-400 via-orange-400 to-amber-500 text-slate-950">
+          <div class="bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl flex-1 flex flex-col justify-between border-4 border-amber-300">
+            
+            <div class="text-center space-y-1">
+              <span class="px-3 py-1 rounded-full bg-amber-500 text-white font-extrabold text-xs tracking-wider uppercase out-theme3-badge">✨ BAND SPECIAL EVENT ✨</span>
+              <h1 class="text-2xl font-black text-slate-900 mt-2 out-head font-heavy leading-tight">
+                네이버 밴드 가입자<br/><span class="text-orange-600 text-3xl font-impact">단독 특급 혜택</span>
+              </h1>
+            </div>
+
+            <div class="flex justify-center my-1">
+              <img src="assets/character.png?v=20260819" alt="광산골프 캐릭터" class="w-24 h-24 object-contain drop-shadow-xl animate-bounce" style="animation-duration: 2s;" />
+            </div>
+
+            <div class="space-y-2">
+              <div class="offer-disc bg-orange-500 text-white p-3 rounded-2xl text-center shadow-lg transition-all duration-300">
+                <div class="text-xs font-bold text-amber-200 out-disc-sub">놓칠 수 없는 찬스!</div>
+                <div class="text-lg font-black out-disc">기존 요금 20% 특별 할인</div>
+              </div>
+              <div class="offer-event bg-amber-400 text-slate-950 p-3 rounded-2xl text-center shadow-lg border-2 border-orange-500 transition-all duration-300">
+                <div class="text-xs font-black text-orange-900 out-event-sub">동반자와 함께 오세요!</div>
+                <div class="text-lg font-black out-event">1+1 동반자 무료 입장!</div>
+              </div>
+              <div class="offer-bonus text-center text-[11px] font-bold text-slate-700 bg-slate-100 py-1.5 rounded-xl out-bonus transition-all duration-300">
+                네이버 영수증 리뷰 작성 시 30분 무료 추가!
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200 text-center space-y-0.5 text-[11px] text-slate-600">
+              <p class="font-black text-slate-900 text-xs out-shop">광산골프 어프로치 숏게임 연습장</p>
+              <p>📍 <span class="out-addr">광산구 동곡상정길 42</span> | ☎ <span class="out-phone">062-454-7878</span></p>
+              <p class="text-[10px] text-slate-500 out-hours">월~토 08:00~24:00 (야간 12시) / 일 08:00~18:00</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Theme 4: Modern Dark Neon -->
+        <div id="theme4" class="theme-view absolute inset-0 hidden flex flex-col justify-between p-7 bg-slate-950 text-white border-2 border-lime-400/40">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black tracking-widest text-lime-400 uppercase out-shop">GS GOLF SHORTGAME</span>
+            <span class="px-2 py-0.5 bg-lime-400 text-slate-950 font-black text-[10px] rounded out-top-badge">BAND ONLY</span>
+          </div>
+
+          <div class="space-y-2 my-auto">
+            <p class="text-xs text-lime-400 font-bold tracking-wider uppercase out-subhead">네이버 밴드 회원 한정 특별 프로모션</p>
+            <h1 class="text-3xl font-black leading-tight text-white out-head font-heavy">
+              네이버 밴드 가입자<br/><span class="text-lime-400 font-impact text-4xl">SPECIAL OFFER</span>
+            </h1>
+
+            <div class="pt-4 space-y-3">
+              <div class="offer-disc p-4 rounded-2xl bg-slate-900/90 border-l-4 border-lime-400 flex items-center justify-between transition-all duration-300">
+                <div class="pr-2">
+                  <div class="text-xs text-lime-400 font-bold">BENEFIT 01</div>
+                  <div class="text-lg font-black text-white out-disc">기존 요금 20% 특별 할인</div>
+                  <p class="text-[11px] text-slate-400 out-disc-sub">밴드 가입 인증 시 전 코스 즉시 할인 적용</p>
+                </div>
+                <div class="text-3xl font-black text-lime-400 font-impact shrink-0 out-disc-rate">20%</div>
+              </div>
+
+              <div class="offer-event p-4 rounded-2xl bg-slate-900/90 border-l-4 border-amber-400 flex items-center justify-between transition-all duration-300">
+                <div class="pr-2">
+                  <div class="text-xs text-amber-400 font-bold">BENEFIT 02</div>
+                  <div class="text-lg font-black text-white out-event">1+1 동반자 무료 입장!</div>
+                  <p class="text-[11px] text-slate-400 out-event-sub">함께 오면 1인 무료 or 1회 무료 증정</p>
+                </div>
+                <div class="text-2xl font-black text-amber-400 font-impact shrink-0 out-event-badge">1+1</div>
+              </div>
+
+              <div class="offer-bonus p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 flex items-center gap-2 transition-all duration-300">
+                <span class="text-lime-400">✔</span>
+                <span class="out-bonus">네이버 영수증 리뷰 작성 시 30분 무료 추가!</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+            <div>
+              <p class="text-slate-200 font-bold">📍 <span class="out-addr">광산구 동곡상정길 42</span></p>
+              <p>⏰ <span class="out-hours">월~토 08:00~24:00 / 일 08:00~18:00</span></p>
+              <p class="text-lime-400 font-black text-xs mt-0.5">📞 <span class="out-phone">062-454-7878</span></p>
+            </div>
+            <img src="assets/character.png?v=20260819" alt="캐릭터" class="w-14 h-14 object-contain filter drop-shadow-[0_0_8px_rgba(163,230,53,0.3)]" />
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Mode state
+    let currentMode = 'my_band'; // 'my_band' or 'other_band'
+
+    // Presets for both modes
+    const presets = {
+      my_band: {
+        modeName: '광산골프 밴드 모드',
+        targetBand: '광산골프 네이버 밴드',
+        shop: '광산골프 어프로치 숏게임 연습장',
+        subHead: '네이버 밴드 회원 한정 특별 프로모션',
+        headline: '네이버 밴드 가입자\n단독 특급 혜택!',
+        topBadge: 'BAND ONLY',
+        discRate: '20%',
+        disc: '기존 요금 20% 특별 할인',
+        discSub: '밴드 가입 인증 시 전 코스 즉시 할인 적용',
+        eventBadge: '1 + 1',
+        event: '1+1 동반자 무료 입장!',
+        eventSub: '함께 오면 1인 무료 or 1회 무료 증정',
+        bonus: '네이버 영수증 리뷰 작성 시 30분 무료 추가!',
+        hours: '월~토 08:00 ~ 24:00 (자정까지) / 일 08:00 ~ 18:00',
+        phone: '062-454-7878',
+        addr: '광산구 동곡상정길 42'
+      },
+      other_band: {
+        modeName: '타 골프 밴드 제휴 모드',
+        targetBand: '광주전남 골프 매니아',
+        shop: '광산골프 어프로치 숏게임 연습장',
+        subHead: '회원님을 위한 특별 제휴 프로모션',
+        headline: '회원님 전용\n단독 특급 우대 혜택!',
+        topBadge: 'PARTNER EVENT',
+        discRate: '20%',
+        disc: '전 코스 이용료 20% 특별 제휴 할인',
+        discSub: '밴드 회원 인증 시 전 코스 즉시 우대 할인',
+        eventBadge: 'SPECIAL',
+        event: '동반 1인 무료 or 커피/음료 제공!',
+        eventSub: '밴드 회원 방문 시 특별 제휴 서비스 제공',
+        bonus: '네이버 영수증 리뷰 작성 시 30분 무료 추가!',
+        hours: '월~토 08:00 ~ 24:00 (자정까지) / 일 08:00 ~ 18:00',
+        phone: '062-454-7878',
+        addr: '광산구 동곡상정길 42'
+      }
+    };
+
+    // Inputs & Output Elements
+    const inputs = {
+      targetBand: document.getElementById('inputTargetBandName'),
+      shop: document.getElementById('inputShopName'),
+      subHead: document.getElementById('inputSubHeadline'),
+      head: document.getElementById('inputHeadline'),
+      topBadge: document.getElementById('inputTopBadge'),
+      discRate: document.getElementById('inputDiscountRate'),
+      disc: document.getElementById('inputDiscount'),
+      discSub: document.getElementById('inputDiscountSub'),
+      eventBadge: document.getElementById('inputEventBadge'),
+      event: document.getElementById('inputEvent'),
+      eventSub: document.getElementById('inputEventSub'),
+      bonus: document.getElementById('inputBonus'),
+      hours: document.getElementById('inputHours'),
+      phone: document.getElementById('inputPhone'),
+      addr: document.getElementById('inputAddress')
+    };
+
+    const toggles = {
+      disc: document.getElementById('chkDiscount'),
+      event: document.getElementById('chkEvent'),
+      bonus: document.getElementById('chkBonus')
+    };
+
+    const wrappers = {
+      disc: document.getElementById('wrapDiscount'),
+      event: document.getElementById('wrapEvent'),
+      bonus: document.getElementById('wrapBonus')
+    };
+
+    const tabMyBand = document.getElementById('tabMyBand');
+    const tabOtherBand = document.getElementById('tabOtherBand');
+    const targetModeBadge = document.getElementById('targetModeBadge');
+    const boxTargetBand = document.getElementById('boxTargetBand');
+
+    // Apply Preset to Inputs
+    function applyPreset(mode) {
+      currentMode = mode;
+      const p = presets[mode];
+
+      if (mode === 'my_band') {
+        tabMyBand.classList.add('bg-emerald-600/20', 'border-emerald-500', 'text-white', 'shadow-md');
+        tabMyBand.classList.remove('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
+        
+        tabOtherBand.classList.remove('bg-indigo-600/20', 'border-indigo-500', 'text-white', 'shadow-md');
+        tabOtherBand.classList.add('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
+
+        targetModeBadge.textContent = '광산골프 밴드 모드';
+        targetModeBadge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold';
+        
+        boxTargetBand.classList.add('opacity-40');
+        inputs.targetBand.value = p.targetBand;
+      } else {
+        tabOtherBand.classList.add('bg-indigo-600/20', 'border-indigo-500', 'text-white', 'shadow-md');
+        tabOtherBand.classList.remove('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
+
+        tabMyBand.classList.remove('bg-emerald-600/20', 'border-emerald-500', 'text-white', 'shadow-md');
+        tabMyBand.classList.add('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
+
+        targetModeBadge.textContent = '타 골프 밴드 제휴 모드';
+        targetModeBadge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold';
+
+        boxTargetBand.classList.remove('opacity-40');
+        inputs.targetBand.value = p.targetBand;
+      }
+
+      inputs.shop.value = p.shop;
+      inputs.subHead.value = mode === 'other_band' ? `[${inputs.targetBand.value}] ${p.subHead}` : p.subHead;
+      inputs.head.value = mode === 'other_band' ? `[${inputs.targetBand.value}]\n${p.headline}` : p.headline;
+      inputs.topBadge.value = p.topBadge;
+      inputs.discRate.value = p.discRate;
+      inputs.disc.value = p.disc;
+      inputs.discSub.value = mode === 'other_band' ? `[${inputs.targetBand.value}] 회원 인증 시 즉시 우대 할인` : p.discSub;
+      inputs.eventBadge.value = p.eventBadge;
+      inputs.event.value = p.event;
+      inputs.eventSub.value = p.eventSub;
+      inputs.bonus.value = p.bonus;
+      inputs.hours.value = p.hours;
+      inputs.phone.value = p.phone;
+      inputs.addr.value = p.addr;
+
+      updateLivePreview();
+    }
+
+    tabMyBand.addEventListener('click', () => applyPreset('my_band'));
+    tabOtherBand.addEventListener('click', () => applyPreset('other_band'));
+    document.getElementById('btnResetPreset').addEventListener('click', () => applyPreset(currentMode));
+
+    // When Target Band Name changes in Other Band Mode, auto-update headline and discSub if using default template
+    inputs.targetBand.addEventListener('input', () => {
+      if (currentMode === 'other_band') {
+        const bandName = inputs.targetBand.value || '골프 밴드';
+        inputs.subHead.value = `[${bandName}] 회원님을 위한 특별 제휴 프로모션`;
+        inputs.head.value = `[${bandName}]\n회원님 전용 단독 특급 우대 혜택!`;
+        inputs.discSub.value = `[${bandName}] 회원 인증 시 전 코스 즉시 우대 할인`;
+      }
+      updateLivePreview();
+    });
+
+    function updateLivePreview() {
+      const bandName = inputs.targetBand.value || '밴드';
+
+      // Text updates
+      document.querySelectorAll('.out-shop').forEach(el => el.textContent = inputs.shop.value);
+      document.querySelectorAll('.out-subhead').forEach(el => el.textContent = inputs.subHead.value);
+      document.querySelectorAll('.out-head').forEach(el => el.innerHTML = inputs.head.value.replace(/\n/g, '<br/>'));
+      document.querySelectorAll('.out-top-badge').forEach(el => el.textContent = inputs.topBadge.value);
+
+      document.querySelectorAll('.out-disc').forEach(el => el.textContent = inputs.disc.value);
+      document.querySelectorAll('.out-disc-sub').forEach(el => el.textContent = inputs.discSub.value);
+      document.querySelectorAll('.out-disc-rate').forEach(el => el.textContent = inputs.discRate.value);
+      
+      document.querySelectorAll('.out-event').forEach(el => el.textContent = inputs.event.value);
+      document.querySelectorAll('.out-event-sub').forEach(el => el.textContent = inputs.eventSub.value);
+      document.querySelectorAll('.out-event-badge').forEach(el => el.textContent = inputs.eventBadge.value);
+
+      document.querySelectorAll('.out-bonus').forEach(el => el.textContent = inputs.bonus.value);
+      document.querySelectorAll('.out-hours').forEach(el => el.textContent = inputs.hours.value);
+      document.querySelectorAll('.out-phone').forEach(el => el.textContent = inputs.phone.value);
+      document.querySelectorAll('.out-addr').forEach(el => el.textContent = inputs.addr.value);
+
+      // Theme specific dynamic text
+      document.querySelectorAll('.out-theme2-title').forEach(el => {
+        el.textContent = currentMode === 'other_band' ? `[${bandName}] × 광산골프 제휴 이벤트` : 'NAVER BAND MEMBER EVENT';
+      });
+
+      document.querySelectorAll('.out-theme3-badge').forEach(el => {
+        el.textContent = currentMode === 'other_band' ? `✨ [${bandName}] 제휴 SPECIAL ✨` : '✨ BAND SPECIAL EVENT ✨';
+      });
+
+      // Toggle Discount
+      const showDisc = toggles.disc.checked;
+      inputs.disc.disabled = !showDisc;
+      inputs.discRate.disabled = !showDisc;
+      inputs.discSub.disabled = !showDisc;
+      wrappers.disc.classList.toggle('opacity-40', !showDisc);
+      wrappers.disc.classList.toggle('pointer-events-none', !showDisc);
+      document.querySelectorAll('.offer-disc').forEach(el => {
+        el.classList.toggle('hidden', !showDisc);
+      });
+
+      // Toggle Event
+      const showEvent = toggles.event.checked;
+      inputs.event.disabled = !showEvent;
+      inputs.eventBadge.disabled = !showEvent;
+      inputs.eventSub.disabled = !showEvent;
+      wrappers.event.classList.toggle('opacity-40', !showEvent);
+      wrappers.event.classList.toggle('pointer-events-none', !showEvent);
+      document.querySelectorAll('.offer-event').forEach(el => {
+        el.classList.toggle('hidden', !showEvent);
+      });
+
+      // Toggle Bonus
+      const showBonus = toggles.bonus.checked;
+      inputs.bonus.disabled = !showBonus;
+      wrappers.bonus.classList.toggle('opacity-40', !showBonus);
+      wrappers.bonus.classList.toggle('pointer-events-none', !showBonus);
+      document.querySelectorAll('.offer-bonus').forEach(el => {
+        el.classList.toggle('hidden', !showBonus);
+      });
+    }
+
+    Object.values(inputs).forEach(input => {
+      input.addEventListener('input', updateLivePreview);
+    });
+
+    Object.values(toggles).forEach(chk => {
+      chk.addEventListener('change', updateLivePreview);
+    });
+
+    // Theme Switcher
+    const styleBtns = document.querySelectorAll('.style-btn');
+    const themes = {
+      style1: document.getElementById('theme1'),
+      style2: document.getElementById('theme2'),
+      style3: document.getElementById('theme3'),
+      style4: document.getElementById('theme4')
+    };
+
+    let currentTheme = 'style1';
+
+    styleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        styleBtns.forEach(b => {
+          b.classList.remove('bg-emerald-600/20', 'border-emerald-500', 'text-emerald-300');
+          b.classList.add('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
+        });
+        btn.classList.add('bg-emerald-600/20', 'border-emerald-500', 'text-emerald-300');
+        btn.classList.remove('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
+
+        const selectedTheme = btn.getAttribute('data-theme');
+        currentTheme = selectedTheme;
+        Object.values(themes).forEach(t => t.classList.add('hidden'));
+        themes[selectedTheme].classList.remove('hidden');
+      });
+    });
+
+    // Download Poster as PNG
+    document.getElementById('btnDownloadPoster').addEventListener('click', () => {
+      const activeElement = themes[currentTheme];
+      const modePrefix = currentMode === 'my_band' ? '광산골프밴드' : `타밴드제휴_${inputs.targetBand.value}`;
+      
+      html2canvas(activeElement, {
+        scale: 2, // High resolution
+        useCORS: true,
+        backgroundColor: null
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `포스터_${modePrefix}_${currentTheme}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }).catch(err => {
+        alert('이미지 생성 중 오류가 발생했습니다: ' + err);
+      });
+    });
+
+    // Copy Band Post Text
+    document.getElementById('btnCopyText').addEventListener('click', () => {
+      let benefitsText = '';
+      let benefitNum = 1;
+      
+      if (toggles.disc.checked) {
+        benefitsText += `✨ 혜택 ${benefitNum++} [${inputs.discRate.value} 할인]: ${inputs.disc.value}\n   (${inputs.discSub.value})\n`;
+      }
+      if (toggles.event.checked) {
+        benefitsText += `✨ 혜택 ${benefitNum++} [${inputs.eventBadge.value}]: ${inputs.event.value}\n   (${inputs.eventSub.value})\n`;
+      }
+      if (toggles.bonus.checked) {
+        benefitsText += `🎁 보너스 혜택: ${inputs.bonus.value}\n`;
+      }
+
+      let textTemplate = '';
+      if (currentMode === 'my_band') {
+        textTemplate = `[📢 광산골프 네이버 밴드 회원 단독 특급 혜택 안내!]
+
+안녕하세요, ${inputs.shop.value}입니다! ⛳
+저희 네이버 밴드에 가입해 주신 회원님들만을 위한 특별 프로모션을 진행합니다!
+
+${benefitsText}
+야간 12시까지 환하게 밝혀진 숏게임장에서 어프로치 & 퍼팅 실력을 완벽하게 업그레이드해보세요!
+
+⏰ 영업시간:
+${inputs.hours.value}
+
+📍 위치: ${inputs.addr.value}
+📞 예약 및 문의: ${inputs.phone.value}
+
+밴드 회원님들의 많은 방문 바랍니다! 감사합니다. 😊`;
+      } else {
+        const bandName = inputs.targetBand.value || '골프 밴드';
+        textTemplate = `[📢 ${bandName} 회원님들을 위한 광산골프 특별 제휴 혜택 안내!]
+
+안녕하세요, [${bandName}] 골퍼 회원님들! ⛳
+광산골프 어프로치 숏게임 연습장에서 [${bandName}] 회원님들을 위해 단독 특별 제휴 프로모션을 준비했습니다!
+
+방문 시 [${bandName}] 회원임을 말씀해 주시면 아래의 특별 혜택을 즉시 드립니다!
+
+${benefitsText}
+실제 필드 감각의 천연 잔디 어프로치 & 퍼팅 숏게임장(야간 12시까지 조명 완비)에서 타수를 줄여보세요!
+
+⏰ 영업시간:
+${inputs.hours.value}
+
+📍 위치: ${inputs.addr.value}
+📞 예약 및 문의: ${inputs.phone.value}
+
+[${bandName}] 회원님들의 많은 방문과 성원 부탁드립니다! 감사합니다. 🏌️‍♂️⛳`;
+      }
+
+      navigator.clipboard.writeText(textTemplate).then(() => {
+        const bandName = currentMode === 'my_band' ? '광산골프 밴드' : `[${inputs.targetBand.value}] 제휴`;
+        alert(`✅ ${bandName} 홍보 게시글 본문이 클립보드에 복사되었습니다!\n밴드 글 작성 시 붙여넣기(Ctrl+V) 하세요.`);
+      }).catch(() => {
+        alert('복사에 실패했습니다.');
+      });
+    });
+
+    // Initial load
+    applyPreset('my_band');
+  </script>
+</body>
+</html>
