@@ -78,6 +78,61 @@
     </div>
   </div>
 
+  <!-- TEMPLATE STORAGE MODAL -->
+  <div id="storageModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-2xl w-full shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <i data-lucide="folder-heart" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              내 템플릿 보관함
+              <span id="storageModalCount" class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">0 / 20 개 저장됨</span>
+            </h3>
+            <p class="text-[11px] text-slate-400">저장된 문구 템플릿을 선택하여 즉시 불러올 수 있습니다.</p>
+          </div>
+        </div>
+        <button id="btnCloseStorage" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Template List Container -->
+      <div id="templateList" class="flex-1 overflow-y-auto space-y-2.5 pr-1">
+        <!-- Dynamic Item Example -->
+      </div>
+
+      <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 shrink-0">
+        <span>💡 최대 20개까지 브라우저에 안전하게 보관됩니다.</span>
+        <button id="btnSaveFromModal" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition flex items-center gap-1.5 text-xs shadow-md">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <span>현재 입력값 새로 저장하기</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVE NAME PROMPT MODAL -->
+  <div id="savePromptModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+      <div class="flex items-center gap-2 text-white font-bold text-sm">
+        <i data-lucide="save" class="w-4 h-4 text-emerald-400"></i>
+        <span>템플릿 문구 저장</span>
+      </div>
+      <p class="text-xs text-slate-400">나중에 알아보기 쉬운 템플릿 제목을 입력해 주세요.</p>
+      <input id="inputSaveTitle" type="text" placeholder="예: 광주전남 밴드 20% 할인 + 1+1" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-semibold focus:outline-none focus:border-emerald-500 transition" />
+      <div class="flex justify-end gap-2 pt-2">
+        <button id="btnCancelSave" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">취소</button>
+        <button id="btnConfirmSave" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-md flex items-center gap-1.5">
+          <i data-lucide="check" class="w-3.5 h-3.5"></i>
+          <span>저장하기</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -93,7 +148,16 @@
         </div>
       </div>
 
-      <div class="flex items-center space-x-2.5">
+      <div class="flex items-center space-x-2">
+        <button id="btnOpenStorage" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 text-xs font-bold transition border border-indigo-500/40 flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="folder-heart" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>내 템플릿 보관함</span>
+          <span id="savedCountBadge" class="px-1.5 py-0.2 rounded-full bg-indigo-500 text-white text-[10px] font-black">0/20</span>
+        </button>
+        <button id="btnQuickSave" class="px-3 py-1.5 rounded-lg bg-emerald-700/30 hover:bg-emerald-700/50 text-emerald-300 text-xs font-bold transition border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="save" class="w-3.5 h-3.5"></i>
+          <span>현재 문구 저장</span>
+        </button>
         <button id="btnLogout" title="잠금" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition border border-slate-700 text-xs flex items-center gap-1">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
           <span class="hidden sm:inline">잠금</span>
@@ -1416,11 +1480,348 @@ ${instaInputs.sub.value}
       }
     });
 
+    // ==========================================
+    // 7. TEMPLATE STORAGE SYSTEM (최대 20개 저장/불러오기)
+    // ==========================================
+    const STORAGE_KEY = 'gsgolf_custom_templates_v1';
+    const MAX_TEMPLATES = 20;
+
+    const storageModal = document.getElementById('storageModal');
+    const savePromptModal = document.getElementById('savePromptModal');
+    const btnOpenStorage = document.getElementById('btnOpenStorage');
+    const btnCloseStorage = document.getElementById('btnCloseStorage');
+    const btnQuickSave = document.getElementById('btnQuickSave');
+    const btnSaveFromModal = document.getElementById('btnSaveFromModal');
+    const btnConfirmSave = document.getElementById('btnConfirmSave');
+    const btnCancelSave = document.getElementById('btnCancelSave');
+    const inputSaveTitle = document.getElementById('inputSaveTitle');
+    const templateList = document.getElementById('templateList');
+    const savedCountBadge = document.getElementById('savedCountBadge');
+    const storageModalCount = document.getElementById('storageModalCount');
+
+    function getSavedTemplates() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function setSavedTemplates(list) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      } catch (e) {
+        alert('저장 공간 오류가 발생했습니다.');
+      }
+      updateStorageBadges();
+    }
+
+    function updateStorageBadges() {
+      const list = getSavedTemplates();
+      const count = list.length;
+      savedCountBadge.textContent = `${count}/${MAX_TEMPLATES}`;
+      storageModalCount.textContent = `${count} / ${MAX_TEMPLATES} 개 저장됨`;
+    }
+
+    function getCurrentFormState() {
+      if (currentChannel === 'band') {
+        return {
+          channel: 'band',
+          bandMode: currentBandMode,
+          theme: currentBandTheme,
+          data: {
+            targetBand: bandInputs.targetBand.value,
+            shop: bandInputs.shop.value,
+            subHead: bandInputs.subHead.value,
+            head: bandInputs.head.value,
+            topBadge: bandInputs.topBadge.value,
+            discRate: bandInputs.discRate.value,
+            disc: bandInputs.disc.value,
+            discSub: bandInputs.discSub.value,
+            eventBadge: bandInputs.eventBadge.value,
+            event: bandInputs.event.value,
+            eventSub: bandInputs.eventSub.value,
+            bonus: bandInputs.bonus.value,
+            hours: bandInputs.hours.value,
+            phone: bandInputs.phone.value,
+            addr: bandInputs.addr.value,
+            toggles: {
+              disc: bandToggles.disc.checked,
+              event: bandToggles.event.checked,
+              bonus: bandToggles.bonus.checked
+            }
+          }
+        };
+      } else if (currentChannel === 'insta') {
+        return {
+          channel: 'insta',
+          theme: currentInstaTheme,
+          data: {
+            page: instaInputs.page.value,
+            tag: instaInputs.tag.value,
+            main: instaInputs.main.value,
+            sub: instaInputs.sub.value,
+            p1: instaInputs.p1.value,
+            p2: instaInputs.p2.value,
+            p3: instaInputs.p3.value,
+            acc: instaInputs.acc.value
+          }
+        };
+      } else if (currentChannel === 'influencer') {
+        return {
+          channel: 'influencer',
+          data: {
+            name: infInputs.name.value,
+            title: infInputs.title.value,
+            greeting: infInputs.greeting.value,
+            b1: infInputs.b1.value,
+            b2: infInputs.b2.value,
+            b3: infInputs.b3.value,
+            mission: infInputs.mission.value,
+            contact: infInputs.contact.value
+          }
+        };
+      }
+    }
+
+    function openSavePrompt() {
+      const list = getSavedTemplates();
+      if (list.length >= MAX_TEMPLATES) {
+        alert(`⚠️ 보관함이 가득 찼습니다! (최대 ${MAX_TEMPLATES}개)\n기존 템플릿을 삭제한 후 다시 저장해 주세요.`);
+        openStorageModal();
+        return;
+      }
+
+      let defaultName = '';
+      const now = new Date();
+      const timeStr = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      if (currentChannel === 'band') {
+        defaultName = `[밴드] ${bandInputs.targetBand.value || '광산골프'} (${timeStr})`;
+      } else if (currentChannel === 'insta') {
+        defaultName = `[인스타] ${instaInputs.main.value.replace(/\\n/g, ' ').substring(0, 15)} (${timeStr})`;
+      } else if (currentChannel === 'influencer') {
+        defaultName = `[인플루언서] ${infInputs.name.value} 초청 (${timeStr})`;
+      }
+
+      inputSaveTitle.value = defaultName;
+      savePromptModal.classList.remove('hidden');
+      inputSaveTitle.focus();
+    }
+
+    function doSaveCurrentState() {
+      const title = inputSaveTitle.value.trim();
+      if (!title) {
+        alert('템플릿 제목을 입력해 주세요.');
+        return;
+      }
+
+      const list = getSavedTemplates();
+      if (list.length >= MAX_TEMPLATES) {
+        alert(`최대 ${MAX_TEMPLATES}개까지만 저장할 수 있습니다.`);
+        return;
+      }
+
+      const state = getCurrentFormState();
+      const now = new Date();
+      const item = {
+        id: 'tpl_' + Date.now(),
+        title: title,
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+        ...state
+      };
+
+      list.unshift(item); // 최신 항목이 맨 위로
+      setSavedTemplates(list);
+      savePromptModal.classList.add('hidden');
+      alert(`✅ "${title}" 템플릿이 저장되었습니다! (보관함: ${list.length}/${MAX_TEMPLATES})`);
+      renderTemplateList();
+    }
+
+    function openStorageModal() {
+      renderTemplateList();
+      storageModal.classList.remove('hidden');
+    }
+
+    function renderTemplateList() {
+      const list = getSavedTemplates();
+      templateList.innerHTML = '';
+
+      if (list.length === 0) {
+        templateList.innerHTML = `
+          <div class="py-12 text-center text-slate-500 space-y-2">
+            <i data-lucide="inbox" class="w-10 h-10 mx-auto text-slate-600"></i>
+            <p class="text-xs">저장된 템플릿이 없습니다.</p>
+            <p class="text-[11px] text-slate-600">입력창에서 문구를 작성하신 후 [현재 문구 저장]을 눌러보세요!</p>
+          </div>
+        `;
+        lucide.createIcons();
+        updateStorageBadges();
+        return;
+      }
+
+      list.forEach((item, idx) => {
+        let channelBadge = '';
+        let summaryText = '';
+
+        if (item.channel === 'band') {
+          channelBadge = '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">네이버 밴드</span>';
+          summaryText = `대상: ${item.data.targetBand || '자체 밴드'} | 할인: ${item.data.discRate || ''} | ${item.data.head ? item.data.head.replace(/\n/g, ' ') : ''}`;
+        } else if (item.channel === 'insta') {
+          channelBadge = '<span class="px-2 py-0.5 rounded bg-pink-500/20 text-pink-300 border border-pink-500/30 text-[10px] font-bold">인스타그램</span>';
+          summaryText = `${item.data.main ? item.data.main.replace(/\n/g, ' ') : ''} | 계정: ${item.data.acc || ''}`;
+        } else if (item.channel === 'influencer') {
+          channelBadge = '<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold">인플루언서</span>';
+          summaryText = `초청 대상: ${item.data.name || ''} | 미션: ${item.data.mission || ''}`;
+        }
+
+        const el = document.createElement('div');
+        el.className = 'p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition flex items-center justify-between gap-3 shadow-md';
+        el.innerHTML = `
+          <div class="space-y-1 overflow-hidden">
+            <div class="flex items-center gap-2">
+              ${channelBadge}
+              <span class="font-bold text-xs text-white truncate">${item.title}</span>
+              <span class="text-[10px] text-slate-400 shrink-0">🕒 ${item.date}</span>
+            </div>
+            <p class="text-[11px] text-slate-400 truncate">${summaryText}</p>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button class="btn-load-tpl px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1 shadow-sm" data-id="${item.id}">
+              <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
+              <span>불러오기</span>
+            </button>
+            <button class="btn-del-tpl p-1.5 rounded-lg bg-slate-800 hover:bg-rose-950 hover:text-rose-400 text-slate-400 transition" data-id="${item.id}" title="삭제">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+        templateList.appendChild(el);
+      });
+
+      // Bind dynamic buttons
+      document.querySelectorAll('.btn-load-tpl').forEach(b => {
+        b.addEventListener('click', () => loadTemplateById(b.getAttribute('data-id')));
+      });
+      document.querySelectorAll('.btn-del-tpl').forEach(b => {
+        b.addEventListener('click', () => deleteTemplateById(b.getAttribute('data-id')));
+      });
+
+      lucide.createIcons();
+      updateStorageBadges();
+    }
+
+    function loadTemplateById(id) {
+      const list = getSavedTemplates();
+      const item = list.find(t => t.id === id);
+      if (!item) return;
+
+      // 1. 해당 채널 탭으로 전환
+      if (item.channel !== currentChannel) {
+        const tabBtn = document.querySelector(`.channel-tab-btn[data-channel="${item.channel}"]`);
+        if (tabBtn) tabBtn.click();
+      }
+
+      // 2. 값 복원
+      if (item.channel === 'band') {
+        if (item.bandMode && item.bandMode !== currentBandMode) {
+          applyBandPreset(item.bandMode);
+        }
+        const d = item.data;
+        if (d.targetBand !== undefined) bandInputs.targetBand.value = d.targetBand;
+        if (d.shop !== undefined) bandInputs.shop.value = d.shop;
+        if (d.subHead !== undefined) bandInputs.subHead.value = d.subHead;
+        if (d.head !== undefined) bandInputs.head.value = d.head;
+        if (d.topBadge !== undefined) bandInputs.topBadge.value = d.topBadge;
+        if (d.discRate !== undefined) bandInputs.discRate.value = d.discRate;
+        if (d.disc !== undefined) bandInputs.disc.value = d.disc;
+        if (d.discSub !== undefined) bandInputs.discSub.value = d.discSub;
+        if (d.eventBadge !== undefined) bandInputs.eventBadge.value = d.eventBadge;
+        if (d.event !== undefined) bandInputs.event.value = d.event;
+        if (d.eventSub !== undefined) bandInputs.eventSub.value = d.eventSub;
+        if (d.bonus !== undefined) bandInputs.bonus.value = d.bonus;
+        if (d.hours !== undefined) bandInputs.hours.value = d.hours;
+        if (d.phone !== undefined) bandInputs.phone.value = d.phone;
+        if (d.addr !== undefined) bandInputs.addr.value = d.addr;
+
+        if (d.toggles) {
+          bandToggles.disc.checked = !!d.toggles.disc;
+          bandToggles.event.checked = !!d.toggles.event;
+          bandToggles.bonus.checked = !!d.toggles.bonus;
+        }
+
+        if (item.theme) {
+          const styleBtn = document.querySelector(`.style-btn[data-theme="${item.theme}"]`);
+          if (styleBtn) styleBtn.click();
+        }
+        updateBandLivePreview();
+
+      } else if (item.channel === 'insta') {
+        const d = item.data;
+        if (d.page !== undefined) instaInputs.page.value = d.page;
+        if (d.tag !== undefined) instaInputs.tag.value = d.tag;
+        if (d.main !== undefined) instaInputs.main.value = d.main;
+        if (d.sub !== undefined) instaInputs.sub.value = d.sub;
+        if (d.p1 !== undefined) instaInputs.p1.value = d.p1;
+        if (d.p2 !== undefined) instaInputs.p2.value = d.p2;
+        if (d.p3 !== undefined) instaInputs.p3.value = d.p3;
+        if (d.acc !== undefined) instaInputs.acc.value = d.acc;
+
+        if (item.theme) {
+          const styleBtn = document.querySelector(`.insta-style-btn[data-instatheme="${item.theme}"]`);
+          if (styleBtn) styleBtn.click();
+        }
+        updateInstaLivePreview();
+
+      } else if (item.channel === 'influencer') {
+        const d = item.data;
+        if (d.name !== undefined) infInputs.name.value = d.name;
+        if (d.title !== undefined) infInputs.title.value = d.title;
+        if (d.greeting !== undefined) infInputs.greeting.value = d.greeting;
+        if (d.b1 !== undefined) infInputs.b1.value = d.b1;
+        if (d.b2 !== undefined) infInputs.b2.value = d.b2;
+        if (d.b3 !== undefined) infInputs.b3.value = d.b3;
+        if (d.mission !== undefined) infInputs.mission.value = d.mission;
+        if (d.contact !== undefined) infInputs.contact.value = d.contact;
+        updateInfLivePreview();
+      }
+
+      storageModal.classList.add('hidden');
+      alert(`📂 "${item.title}" 템플릿을 성공적으로 불러왔습니다!`);
+    }
+
+    function deleteTemplateById(id) {
+      const list = getSavedTemplates();
+      const item = list.find(t => t.id === id);
+      if (!item) return;
+
+      if (confirm(`정말 "${item.title}" 템플릿을 삭제하시겠습니까?`)) {
+        const filtered = list.filter(t => t.id !== id);
+        setSavedTemplates(filtered);
+        renderTemplateList();
+      }
+    }
+
+    btnOpenStorage.addEventListener('click', openStorageModal);
+    btnCloseStorage.addEventListener('click', () => storageModal.classList.add('hidden'));
+    btnQuickSave.addEventListener('click', openSavePrompt);
+    btnSaveFromModal.addEventListener('click', () => {
+      storageModal.classList.add('hidden');
+      openSavePrompt();
+    });
+    btnConfirmSave.addEventListener('click', doSaveCurrentState);
+    btnCancelSave.addEventListener('click', () => savePromptModal.classList.add('hidden'));
+    inputSaveTitle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doSaveCurrentState();
+    });
+
     // Initial setups
     checkAuth();
     applyBandPreset('my_band');
     updateInstaLivePreview();
     updateInfLivePreview();
+    updateStorageBadges();
   </script>
 </body>
 </html>
