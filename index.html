@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>광산골프 네이버 밴드 홍보 포스터 뷰어 & 에디터</title>
+  <title>광산골프 마케팅 & 홍보 포스터 센터</title>
+  <!-- GitHub Pages: https://kong3573.github.io/gsgolf_ad/ -->
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -26,9 +27,56 @@
       height: 700px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
+
+    .insta-preview {
+      width: 500px;
+      min-width: 500px;
+      height: 500px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .animate-shake {
+      animation: shake 0.4s ease-in-out;
+    }
   </style>
 </head>
-<body class="min-h-full flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+<body class="min-h-full flex flex-col antialiased selection:bg-emerald-500 selection:text-white relative">
+
+  <!-- PASSWORD AUTH MODAL (1818) -->
+  <div id="authOverlay" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4">
+    <div id="authBox" class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6 text-center">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+        <i data-lucide="lock" class="w-8 h-8 text-white"></i>
+      </div>
+      
+      <div class="space-y-1.5">
+        <h2 class="text-xl font-black text-white">광산골프 마케팅 센터</h2>
+        <p class="text-xs text-slate-400">관리자 인증 비밀번호를 입력해주세요.</p>
+      </div>
+
+      <div class="space-y-3">
+        <div class="relative">
+          <input id="inputPassword" type="password" maxlength="10" placeholder="비밀번호 입력" class="w-full px-4 py-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-white font-bold text-center tracking-widest text-lg focus:outline-none focus:border-emerald-500 transition shadow-inner" autofocus />
+        </div>
+        <p id="authErrorMsg" class="text-xs text-rose-400 font-semibold hidden flex items-center justify-center gap-1">
+          <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> 비밀번호가 올바르지 않습니다.
+        </p>
+        <button id="btnAuthSubmit" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+          <span>입장하기</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="pt-2 text-[11px] text-slate-400">
+        ⛳ 광산골프 어프로치 숏게임 연습장 마케팅 포털
+      </div>
+    </div>
+  </div>
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
@@ -39,27 +87,51 @@
         </div>
         <div>
           <h1 class="text-base font-bold text-white flex items-center gap-2">
-            광산골프 <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">네이버 밴드 홍보 포스터 에디터</span>
+            광산골프 <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">마케팅 & 홍보 센터</span>
           </h1>
-          <p class="text-xs text-slate-400">광산골프 밴드 & 타 골프 밴드 제휴 맞춤형 포스터 제작</p>
+          <p class="text-xs text-slate-400">네이버 밴드 · 인스타그램 카드뉴스 · 인플루언서 섭외</p>
         </div>
       </div>
 
-      <div class="flex items-center space-x-3">
-        <button id="btnCopyText" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center gap-1.5 shadow-sm">
-          <i data-lucide="copy" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span id="btnCopyLabel">밴드 게시글 본문 복사</span>
+      <div class="flex items-center space-x-2.5">
+        <button id="btnLogout" title="잠금" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition border border-slate-700 text-xs flex items-center gap-1">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">잠금</span>
         </button>
-        <button id="btnDownloadPoster" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/30 flex items-center gap-1.5">
+        <button id="btnHeaderCopy" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="copy" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span id="btnHeaderCopyLabel">홍보 본문 복사</span>
+        </button>
+        <button id="btnHeaderDownload" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/30 flex items-center gap-1.5">
           <i data-lucide="download" class="w-3.5 h-3.5"></i>
-          <span>포스터 이미지 저장 (PNG)</span>
+          <span id="btnHeaderDownloadLabel">이미지 저장 (PNG)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Marketing Channel Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80 bg-slate-950/60">
+      <div class="flex space-x-2 py-2 overflow-x-auto">
+        <button class="channel-tab-btn px-4 py-2 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-emerald-600/20 text-emerald-300 border border-emerald-500/40" data-channel="band">
+          <i data-lucide="message-square" class="w-4 h-4 text-emerald-400"></i>
+          <span>1. 네이버 밴드 홍보</span>
+        </button>
+        <button class="channel-tab-btn px-4 py-2 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800" data-channel="insta">
+          <i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i>
+          <span>2. 인스타그램 카드뉴스</span>
+        </button>
+        <button class="channel-tab-btn px-4 py-2 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800" data-channel="influencer">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+          <span>3. 인플루언서 체험단 섭외</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <!-- ========================================================================= -->
+  <!-- 1. CHANNEL 1: NAVER BAND (기존 기능 100% 완벽 유지) -->
+  <!-- ========================================================================= -->
+  <main id="channelBand" class="channel-view flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
     <!-- Left: Customizer & Text Editor (5 cols) -->
     <div class="lg:col-span-5 space-y-5">
@@ -268,7 +340,7 @@
     <div class="lg:col-span-7 flex flex-col items-center justify-center space-y-4">
       
       <div class="flex items-center justify-between w-full max-w-[500px] text-xs text-slate-400">
-        <span class="flex items-center gap-1.5"><i data-lucide="eye" class="w-4 h-4 text-emerald-400"></i> 실시간 포스터 미리보기</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="eye" class="w-4 h-4 text-emerald-400"></i> 실시간 밴드 포스터 미리보기</span>
         <span class="bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 text-[11px]">사이즈: 500 × 700 px (세로형)</span>
       </div>
 
@@ -493,16 +565,431 @@
 
   </main>
 
+  <!-- ========================================================================= -->
+  <!-- 2. CHANNEL 2: INSTAGRAM CARD NEWS (인스타그램 카드뉴스) -->
+  <!-- ========================================================================= -->
+  <main id="channelInsta" class="channel-view hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Left: Insta Editor Form (5 cols) -->
+    <div class="lg:col-span-5 space-y-5">
+      
+      <!-- Insta Style Selector -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+        <h2 class="text-xs font-bold text-slate-300 flex items-center gap-2">
+          <i data-lucide="layout" class="w-4 h-4 text-pink-400"></i>
+          인스타그램 카드뉴스 스타일 선택
+        </h2>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="insta-style-btn p-2.5 rounded-xl border text-left transition text-xs font-semibold bg-pink-600/20 border-pink-500 text-pink-300" data-instatheme="insta1">
+            <span class="block text-xs font-bold text-white mb-0.5">1. 매거진 에디토리얼</span>
+            <span class="text-[10px] text-slate-400">감각적인 골프 매거진 감성</span>
+          </button>
+          <button class="insta-style-btn p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-400 hover:text-slate-200" data-instatheme="insta2">
+            <span class="block text-xs font-bold text-white mb-0.5">2. 야간 나이트 라운딩</span>
+            <span class="text-[10px] text-slate-400">야간 12시 조명 감성 비주얼</span>
+          </button>
+          <button class="insta-style-btn p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-400 hover:text-slate-200" data-instatheme="insta3">
+            <span class="block text-xs font-bold text-white mb-0.5">3. 비비드 팝 혜택강조</span>
+            <span class="text-[10px] text-slate-400">피드 스크롤을 멈추는 컬러</span>
+          </button>
+          <button class="insta-style-btn p-2.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-400 hover:text-slate-200" data-instatheme="insta4">
+            <span class="block text-xs font-bold text-white mb-0.5">4. 캐릭터 숏게임 꿀팁</span>
+            <span class="text-[10px] text-slate-400">캐릭터와 함께하는 레슨/팁</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Insta Inputs -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3.5">
+        <h2 class="text-xs font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2.5">
+          <i data-lucide="edit-3" class="w-4 h-4 text-pink-400"></i>
+          카드뉴스 문구 실시간 수정
+        </h2>
+
+        <div class="space-y-3 text-xs">
+          <div class="grid grid-cols-3 gap-2">
+            <div class="col-span-1">
+              <label class="block font-semibold text-slate-300 mb-1">슬라이드 넘버</label>
+              <input id="inputInstaPage" type="text" value="01 / 05" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 text-center font-bold focus:outline-none focus:border-pink-500" />
+            </div>
+            <div class="col-span-2">
+              <label class="block font-semibold text-slate-300 mb-1">상단 태그라인</label>
+              <input id="inputInstaTag" type="text" value="GWANGSAN GOLF SHORT GAME" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-pink-500" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">메인 카피 (큰 타이틀)</label>
+            <input id="inputInstaMain" type="text" value="어프로치 타수 줄이는\n비밀 숏게임 성지" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 font-bold focus:outline-none focus:border-pink-500" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">서브 카피</label>
+            <input id="inputInstaSub" type="text" value="실제 필드 천연잔디 & 야간 12시까지 완벽 조명" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-pink-500" />
+          </div>
+
+          <!-- Feature Bullets -->
+          <div class="space-y-2 pt-1 border-t border-slate-800">
+            <label class="block font-bold text-slate-300">핵심 포인트 3가지</label>
+            <div class="space-y-1.5">
+              <input id="inputInstaPoint1" type="text" value="⛳ 10~70m 다양한 어프로치 실전 벙커/그린 완비" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:outline-none focus:border-pink-500" />
+              <input id="inputInstaPoint2" type="text" value="🌙 퇴근 후에도 여유로운 야간 12시 라이트 운영" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:outline-none focus:border-pink-500" />
+              <input id="inputInstaPoint3" type="text" value="🎁 네이버 밴드 가입 시 특별 할인 & 1+1 이벤트" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:outline-none focus:border-pink-500" />
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800">
+            <label class="block font-semibold text-slate-300 mb-1">인스타 계정 / 문의</label>
+            <input id="inputInstaAccount" type="text" value="@gwangsan_golf | ☎ 062-454-7878" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-pink-500" />
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right: Insta Live Preview (7 cols) -->
+    <div class="lg:col-span-7 flex flex-col items-center justify-center space-y-4">
+      
+      <div class="flex items-center justify-between w-full max-w-[500px] text-xs text-slate-400">
+        <span class="flex items-center gap-1.5"><i data-lucide="eye" class="w-4 h-4 text-pink-400"></i> 인스타그램 1:1 정방형 미리보기</span>
+        <span class="bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 text-[11px]">사이즈: 1080 × 1080 px (1:1 Feed)</span>
+      </div>
+
+      <!-- INSTA PREVIEW CANVAS WRAPPER -->
+      <div id="instaCard" class="insta-preview rounded-3xl overflow-hidden relative flex flex-col justify-between select-none">
+        
+        <!-- Insta Theme 1: Magazine Editorial -->
+        <div id="instaTheme1" class="insta-view absolute inset-0 flex flex-col justify-between p-8 bg-cover bg-center text-white" style="background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.75) 0%, rgba(3, 20, 13, 0.92) 100%), url('assets/golf_green.jpg');">
+          <div class="flex items-center justify-between border-b border-white/20 pb-3">
+            <span class="text-xs font-black tracking-widest uppercase text-emerald-400 out-insta-tag">GWANGSAN GOLF SHORT GAME</span>
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-white/20 out-insta-page">01 / 05</span>
+          </div>
+
+          <div class="space-y-3 my-auto">
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 text-xs font-black uppercase">SPECIAL SPOT</span>
+            <h1 class="text-3xl font-black text-white leading-tight font-heavy out-insta-main">
+              어프로치 타수 줄이는<br/><span class="text-emerald-400 underline decoration-amber-400">비밀 숏게임 성지</span>
+            </h1>
+            <p class="text-xs text-slate-300 font-medium out-insta-sub">실제 필드 천연잔디 & 야간 12시까지 완벽 조명</p>
+
+            <div class="pt-3 space-y-1.5 text-xs text-slate-200">
+              <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-900/80 border border-white/10 backdrop-blur-sm out-insta-p1">⛳ 10~70m 다양한 어프로치 실전 벙커/그린 완비</div>
+              <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-900/80 border border-white/10 backdrop-blur-sm out-insta-p2">🌙 퇴근 후에도 여유로운 야간 12시 라이트 운영</div>
+              <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-900/80 border border-white/10 backdrop-blur-sm out-insta-p3">🎁 네이버 밴드 가입 시 특별 할인 & 1+1 이벤트</div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-white/20 flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-300 out-insta-acc">@gwangsan_golf | ☎ 062-454-7878</span>
+            <img src="assets/character.png?v=20260819" alt="캐릭터" class="w-12 h-12 object-contain drop-shadow-md" />
+          </div>
+        </div>
+
+        <!-- Insta Theme 2: Night Glow -->
+        <div id="instaTheme2" class="insta-view absolute inset-0 hidden flex flex-col justify-between p-8 bg-slate-950 text-white border-4 border-indigo-500/40">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-ping"></span>
+              <span class="text-xs font-black tracking-widest text-indigo-400 out-insta-tag">NIGHT GOLF ACADEMY</span>
+            </div>
+            <span class="text-xs font-bold text-slate-400 out-insta-page">01 / 05</span>
+          </div>
+
+          <div class="space-y-3 my-auto">
+            <h1 class="text-3xl font-black text-white leading-tight font-heavy out-insta-main">
+              밤 12시까지 열리는<br/><span class="text-indigo-400 font-impact text-4xl">NIGHT SHORT GAME</span>
+            </h1>
+            <p class="text-xs text-indigo-200 out-insta-sub">퇴근 후 나만의 비밀 숏게임 훈련장</p>
+
+            <div class="space-y-2 pt-2">
+              <div class="p-2.5 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-xs text-slate-200 out-insta-p1">⛳ 10~70m 실전 천연잔디 코스 완비</div>
+              <div class="p-2.5 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-xs text-slate-200 out-insta-p2">🌙 눈부심 없는 프리미엄 야간 LED 조명</div>
+              <div class="p-2.5 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-xs text-slate-200 out-insta-p3">🎁 밴드 가입 시 20% 할인 & 1+1 혜택</div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span class="out-insta-acc">📍 광산구 동곡상정길 42 | ☎ 062-454-7878</span>
+            <img src="assets/character.png?v=20260819" alt="캐릭터" class="w-12 h-12 object-contain" />
+          </div>
+        </div>
+
+        <!-- Insta Theme 3: Vivid Pop -->
+        <div id="instaTheme3" class="insta-view absolute inset-0 hidden flex flex-col justify-between p-8 bg-gradient-to-tr from-amber-400 via-orange-500 to-pink-500 text-slate-950">
+          <div class="bg-white/95 rounded-3xl p-6 shadow-2xl flex-1 flex flex-col justify-between">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <span class="text-[11px] font-black text-orange-600 uppercase tracking-wider out-insta-tag">GWANGSAN GOLF</span>
+              <span class="text-xs font-bold text-slate-400 out-insta-page">01 / 05</span>
+            </div>
+
+            <div class="space-y-2 my-auto text-center">
+              <h1 class="text-2xl font-black text-slate-900 font-heavy leading-tight out-insta-main">
+                어프로치 타수 줄이는<br/><span class="text-orange-600 font-impact text-3xl">비밀 숏게임장</span>
+              </h1>
+              <p class="text-xs text-slate-600 font-bold out-insta-sub">실제 필드 천연잔디 & 야간 12시 조명</p>
+
+              <div class="space-y-1.5 pt-2 text-left text-xs">
+                <div class="p-2 rounded-xl bg-amber-50 border border-amber-200 font-semibold text-slate-800 out-insta-p1">⛳ 10~70m 어프로치 & 벙커 실전 훈련</div>
+                <div class="p-2 rounded-xl bg-orange-50 border border-orange-200 font-semibold text-slate-800 out-insta-p2">🌙 퇴근 후 여유로운 야간 12시 운영</div>
+                <div class="p-2 rounded-xl bg-pink-50 border border-pink-200 font-semibold text-slate-800 out-insta-p3">🎁 밴드 회원 전용 20% 특별 할인!</div>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600">
+              <span class="out-insta-acc">@gwangsan_golf | ☎ 062-454-7878</span>
+              <img src="assets/character.png?v=20260819" alt="캐릭터" class="w-10 h-10 object-contain" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Insta Theme 4: Character Tips -->
+        <div id="instaTheme4" class="insta-view absolute inset-0 hidden flex flex-col justify-between p-8 bg-slate-900 text-white border-4 border-emerald-400/40">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-emerald-400 tracking-wider uppercase out-insta-tag">GOLF SHORT GAME TIPS</span>
+            <span class="text-xs font-bold text-slate-400 out-insta-page">01 / 05</span>
+          </div>
+
+          <div class="flex items-center gap-4 my-auto">
+            <img src="assets/character.png?v=20260819" alt="캐릭터" class="w-24 h-24 object-contain drop-shadow-xl animate-bounce shrink-0" style="animation-duration: 2.5s;" />
+            <div class="space-y-2">
+              <h1 class="text-2xl font-black text-white font-heavy leading-tight out-insta-main">
+                어프로치 3타 줄이기<br/><span class="text-emerald-400 font-impact">광산골프 실전팁!</span>
+              </h1>
+              <p class="text-xs text-slate-400 out-insta-sub">천연잔디에서 연습해야 진짜 필드에서 들어갑니다!</p>
+            </div>
+          </div>
+
+          <div class="space-y-1.5 text-xs">
+            <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 out-insta-p1">✔ 실전 필드와 동일한 천연잔디 어프로치</div>
+            <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 out-insta-p2">✔ 그린 주변 정밀 퍼팅 & 벙커 탈출 레슨</div>
+            <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 out-insta-p3">✔ 밴드 가입 시 즉시 20% 할인 혜택</div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span class="out-insta-acc">📍 광산구 동곡상정길 42 | ☎ 062-454-7878</span>
+            <span class="font-bold text-emerald-400">광산골프</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 3. CHANNEL 3: INFLUENCER / VIP INVITATION (인플루언서 섭외 요청서) -->
+  <!-- ========================================================================= -->
+  <main id="channelInfluencer" class="channel-view hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Left: Influencer Form (5 cols) -->
+    <div class="lg:col-span-5 space-y-5">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3.5">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <h2 class="text-xs font-bold text-slate-200 flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+            인플루언서 섭외 & 초청장 작성
+          </h2>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold">협찬/체험단 모드</span>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">인플루언서 닉네임 / 채널명</label>
+            <input id="inputInfName" type="text" value="@golf_pro_kim" placeholder="예: @golf_mania, 골프치는민지" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-amber-500/40 text-amber-300 font-bold focus:outline-none focus:border-amber-400" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">초청 타이틀</label>
+            <input id="inputInfTitle" type="text" value="VIP 골프 인플루언서 무료 체험 초청" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-amber-400" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">초청 제안 인사말</label>
+            <input id="inputInfGreeting" type="text" value="평소 골프 콘텐츠를 인상 깊게 보며 응원하고 있는 광산골프입니다. 실제 천연잔디 숏게임장에 초대합니다." class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-amber-400" />
+          </div>
+
+          <!-- Provided Benefits -->
+          <div class="space-y-2 pt-1 border-t border-slate-800">
+            <label class="block font-bold text-amber-300">🎁 제공 협찬 혜택 (무료 지원 항목)</label>
+            <div class="space-y-1.5">
+              <input id="inputInfBenefit1" type="text" value="💎 광산골프 전 코스 무제한 VIP 무료 이용권" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:outline-none focus:border-amber-400" />
+              <input id="inputInfBenefit2" type="text" value="👥 동반 1인 전액 무료 초대 (함께 라운딩 가능)" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:outline-none focus:border-amber-400" />
+              <input id="inputInfBenefit3" type="text" value="☕ 프리미엄 음료 및 간식 전액 무료 제공" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:outline-none focus:border-amber-400" />
+            </div>
+          </div>
+
+          <!-- Requirements -->
+          <div class="space-y-2 pt-1 border-t border-slate-800">
+            <label class="block font-bold text-slate-300">📝 협찬 요청 조건 (체험 미션)</label>
+            <input id="inputInfMission" type="text" value="인스타그램 릴스/피드 또는 블로그 리뷰 1회 업로드 (방문일 기준 7일 이내)" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:outline-none focus:border-amber-400" />
+          </div>
+
+          <div class="pt-2 border-t border-slate-800">
+            <label class="block font-semibold text-slate-300 mb-1">방문 예약 / 담당자 연락처</label>
+            <input id="inputInfContact" type="text" value="DM 회신 또는 전화(062-454-7878)로 편하신 일정 예약" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-amber-400" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Influencer Invitation Preview (7 cols) -->
+    <div class="lg:col-span-7 flex flex-col items-center justify-center space-y-4">
+      <div class="flex items-center justify-between w-full max-w-[500px] text-xs text-slate-400">
+        <span class="flex items-center gap-1.5"><i data-lucide="eye" class="w-4 h-4 text-amber-400"></i> VIP 공식 초청장 카드 미리보기</span>
+        <span class="bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 text-[11px]">사이즈: 500 × 700 px (VIP Card)</span>
+      </div>
+
+      <!-- INFLUENCER CARD CANVAS -->
+      <div id="influencerCard" class="poster-preview rounded-3xl overflow-hidden relative flex flex-col justify-between select-none bg-slate-950 border-2 border-amber-500/40 p-7 text-white shadow-2xl" style="background-image: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0.95) 75%);">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-amber-500/30 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-black text-sm shadow">👑</span>
+            <span class="font-extrabold text-xs text-amber-300 tracking-wider uppercase">GWANGSAN GOLF VIP INVITATION</span>
+          </div>
+          <span class="text-[11px] font-black text-slate-950 bg-amber-400 px-2.5 py-0.5 rounded-full shadow">VIP GUEST</span>
+        </div>
+
+        <!-- Body -->
+        <div class="space-y-3.5 my-auto">
+          <div class="space-y-1">
+            <span class="text-xs font-bold text-amber-400 out-inf-name">Dear. @golf_pro_kim 님</span>
+            <h1 class="text-2xl font-black text-white leading-tight font-heavy out-inf-title">
+              VIP 골프 인플루언서<br/><span class="text-amber-400 font-impact text-3xl">무료 체험 초청장</span>
+            </h1>
+            <p class="text-xs text-slate-300 out-inf-greeting">평소 멋진 골프 콘텐츠를 응원하고 있는 광산골프입니다. 실제 천연잔디 숏게임장에 초대합니다.</p>
+          </div>
+
+          <!-- Benefits Box -->
+          <div class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 space-y-2 shadow-xl backdrop-blur-sm">
+            <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">✨ VIP SPONSOR BENEFITS</span>
+            <div class="space-y-1.5 text-xs text-slate-100">
+              <div class="flex items-center gap-2 out-inf-b1">💎 광산골프 전 코스 무제한 VIP 무료 이용권</div>
+              <div class="flex items-center gap-2 out-inf-b2">👥 동반 1인 전액 무료 초대 (함께 라운딩 가능)</div>
+              <div class="flex items-center gap-2 out-inf-b3">☕ 프리미엄 음료 및 간식 전액 무료 제공</div>
+            </div>
+          </div>
+
+          <!-- Mission & Info -->
+          <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs space-y-1 text-slate-300">
+            <p class="text-amber-300 font-bold">📍 체험 미션:</p>
+            <p class="text-[11px] out-inf-mission">인스타그램 릴스/피드 또는 블로그 리뷰 1회 업로드 (방문일 기준 7일 이내)</p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="pt-3 border-t border-amber-500/30 flex items-center justify-between text-[11px] text-slate-400">
+          <div>
+            <p class="text-white font-bold">광산골프 어프로치 숏게임 연습장</p>
+            <p class="text-amber-300 out-inf-contact">DM 회신 또는 ☎ 062-454-7878 로 일정 조율</p>
+          </div>
+          <img src="assets/character.png?v=20260819" alt="캐릭터" class="w-14 h-14 object-contain filter drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]" />
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
   <script>
     lucide.createIcons();
 
-    // Mode state
-    let currentMode = 'my_band'; // 'my_band' or 'other_band'
+    // ==========================================
+    // 1. PASSWORD AUTH (1818)
+    // ==========================================
+    const AUTH_PASS = '1818';
+    const authOverlay = document.getElementById('authOverlay');
+    const authBox = document.getElementById('authBox');
+    const inputPassword = document.getElementById('inputPassword');
+    const btnAuthSubmit = document.getElementById('btnAuthSubmit');
+    const authErrorMsg = document.getElementById('authErrorMsg');
+    const btnLogout = document.getElementById('btnLogout');
 
-    // Presets for both modes
-    const presets = {
+    function checkAuth() {
+      if (sessionStorage.getItem('gsgolf_auth') === 'true') {
+        authOverlay.classList.add('hidden');
+      } else {
+        authOverlay.classList.remove('hidden');
+        inputPassword.focus();
+      }
+    }
+
+    function doAuth() {
+      if (inputPassword.value.trim() === AUTH_PASS) {
+        sessionStorage.setItem('gsgolf_auth', 'true');
+        authErrorMsg.classList.add('hidden');
+        authOverlay.classList.add('hidden');
+        inputPassword.value = '';
+      } else {
+        authErrorMsg.classList.remove('hidden');
+        authBox.classList.add('animate-shake');
+        setTimeout(() => authBox.classList.remove('animate-shake'), 400);
+        inputPassword.value = '';
+        inputPassword.focus();
+      }
+    }
+
+    btnAuthSubmit.addEventListener('click', doAuth);
+    inputPassword.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doAuth();
+    });
+
+    btnLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('gsgolf_auth');
+      checkAuth();
+    });
+
+    // ==========================================
+    // 2. CHANNEL SWITCHER (BAND / INSTA / INFLUENCER)
+    // ==========================================
+    let currentChannel = 'band'; // 'band', 'insta', 'influencer'
+    const channelTabs = document.querySelectorAll('.channel-tab-btn');
+    const channelViews = {
+      band: document.getElementById('channelBand'),
+      insta: document.getElementById('channelInsta'),
+      influencer: document.getElementById('channelInfluencer')
+    };
+
+    channelTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-channel');
+        currentChannel = target;
+
+        channelTabs.forEach(t => {
+          t.classList.remove('bg-emerald-600/20', 'text-emerald-300', 'border-emerald-500/40', 'bg-pink-600/20', 'text-pink-300', 'border-pink-500/40', 'bg-amber-600/20', 'text-amber-300', 'border-amber-500/40');
+          t.classList.add('bg-slate-900', 'text-slate-400', 'border-slate-800');
+        });
+
+        if (target === 'band') {
+          tab.classList.add('bg-emerald-600/20', 'text-emerald-300', 'border-emerald-500/40');
+          document.getElementById('btnHeaderCopyLabel').textContent = '밴드 게시글 본문 복사';
+          document.getElementById('btnHeaderDownloadLabel').textContent = '포스터 이미지 저장 (PNG)';
+        } else if (target === 'insta') {
+          tab.classList.add('bg-pink-600/20', 'text-pink-300', 'border-pink-500/40');
+          document.getElementById('btnHeaderCopyLabel').textContent = '인스타 캡션&해시태그 복사';
+          document.getElementById('btnHeaderDownloadLabel').textContent = '카드뉴스 이미지 저장 (PNG)';
+        } else if (target === 'influencer') {
+          tab.classList.add('bg-amber-600/20', 'text-amber-300', 'border-amber-500/40');
+          document.getElementById('btnHeaderCopyLabel').textContent = '섭외 DM/메일 전문 복사';
+          document.getElementById('btnHeaderDownloadLabel').textContent = '초청장 이미지 저장 (PNG)';
+        }
+        tab.classList.remove('bg-slate-900', 'text-slate-400', 'border-slate-800');
+
+        Object.values(channelViews).forEach(v => v.classList.add('hidden'));
+        channelViews[target].classList.remove('hidden');
+      });
+    });
+
+    // ==========================================
+    // 3. CHANNEL 1 (NAVER BAND) LOGIC
+    // ==========================================
+    let currentBandMode = 'my_band'; // 'my_band' or 'other_band'
+    const bandPresets = {
       my_band: {
-        modeName: '광산골프 밴드 모드',
         targetBand: '광산골프 네이버 밴드',
         shop: '광산골프 어프로치 숏게임 연습장',
         subHead: '네이버 밴드 회원 한정 특별 프로모션',
@@ -520,7 +1007,6 @@
         addr: '광산구 동곡상정길 42'
       },
       other_band: {
-        modeName: '타 골프 밴드 제휴 모드',
         targetBand: '광주전남 골프 매니아',
         shop: '광산골프 어프로치 숏게임 연습장',
         subHead: '회원님을 위한 특별 제휴 프로모션',
@@ -539,8 +1025,7 @@
       }
     };
 
-    // Inputs & Output Elements
-    const inputs = {
+    const bandInputs = {
       targetBand: document.getElementById('inputTargetBandName'),
       shop: document.getElementById('inputShopName'),
       subHead: document.getElementById('inputSubHeadline'),
@@ -558,13 +1043,13 @@
       addr: document.getElementById('inputAddress')
     };
 
-    const toggles = {
+    const bandToggles = {
       disc: document.getElementById('chkDiscount'),
       event: document.getElementById('chkEvent'),
       bonus: document.getElementById('chkBonus')
     };
 
-    const wrappers = {
+    const bandWrappers = {
       disc: document.getElementById('wrapDiscount'),
       event: document.getElementById('wrapEvent'),
       bonus: document.getElementById('wrapBonus')
@@ -575,151 +1060,126 @@
     const targetModeBadge = document.getElementById('targetModeBadge');
     const boxTargetBand = document.getElementById('boxTargetBand');
 
-    // Apply Preset to Inputs
-    function applyPreset(mode) {
-      currentMode = mode;
-      const p = presets[mode];
+    function applyBandPreset(mode) {
+      currentBandMode = mode;
+      const p = bandPresets[mode];
 
       if (mode === 'my_band') {
         tabMyBand.classList.add('bg-emerald-600/20', 'border-emerald-500', 'text-white', 'shadow-md');
         tabMyBand.classList.remove('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
-        
         tabOtherBand.classList.remove('bg-indigo-600/20', 'border-indigo-500', 'text-white', 'shadow-md');
         tabOtherBand.classList.add('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
-
         targetModeBadge.textContent = '광산골프 밴드 모드';
         targetModeBadge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold';
-        
         boxTargetBand.classList.add('opacity-40');
-        inputs.targetBand.value = p.targetBand;
+        bandInputs.targetBand.value = p.targetBand;
       } else {
         tabOtherBand.classList.add('bg-indigo-600/20', 'border-indigo-500', 'text-white', 'shadow-md');
         tabOtherBand.classList.remove('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
-
         tabMyBand.classList.remove('bg-emerald-600/20', 'border-emerald-500', 'text-white', 'shadow-md');
         tabMyBand.classList.add('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
-
         targetModeBadge.textContent = '타 골프 밴드 제휴 모드';
         targetModeBadge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold';
-
         boxTargetBand.classList.remove('opacity-40');
-        inputs.targetBand.value = p.targetBand;
+        bandInputs.targetBand.value = p.targetBand;
       }
 
-      inputs.shop.value = p.shop;
-      inputs.subHead.value = mode === 'other_band' ? `[${inputs.targetBand.value}] ${p.subHead}` : p.subHead;
-      inputs.head.value = mode === 'other_band' ? `[${inputs.targetBand.value}]\n${p.headline}` : p.headline;
-      inputs.topBadge.value = p.topBadge;
-      inputs.discRate.value = p.discRate;
-      inputs.disc.value = p.disc;
-      inputs.discSub.value = mode === 'other_band' ? `[${inputs.targetBand.value}] 회원 인증 시 즉시 우대 할인` : p.discSub;
-      inputs.eventBadge.value = p.eventBadge;
-      inputs.event.value = p.event;
-      inputs.eventSub.value = p.eventSub;
-      inputs.bonus.value = p.bonus;
-      inputs.hours.value = p.hours;
-      inputs.phone.value = p.phone;
-      inputs.addr.value = p.addr;
+      bandInputs.shop.value = p.shop;
+      bandInputs.subHead.value = mode === 'other_band' ? `[${bandInputs.targetBand.value}] ${p.subHead}` : p.subHead;
+      bandInputs.head.value = mode === 'other_band' ? `[${bandInputs.targetBand.value}]\n${p.headline}` : p.headline;
+      bandInputs.topBadge.value = p.topBadge;
+      bandInputs.discRate.value = p.discRate;
+      bandInputs.disc.value = p.disc;
+      bandInputs.discSub.value = mode === 'other_band' ? `[${bandInputs.targetBand.value}] 회원 인증 시 즉시 우대 할인` : p.discSub;
+      bandInputs.eventBadge.value = p.eventBadge;
+      bandInputs.event.value = p.event;
+      bandInputs.eventSub.value = p.eventSub;
+      bandInputs.bonus.value = p.bonus;
+      bandInputs.hours.value = p.hours;
+      bandInputs.phone.value = p.phone;
+      bandInputs.addr.value = p.addr;
 
-      updateLivePreview();
+      updateBandLivePreview();
     }
 
-    tabMyBand.addEventListener('click', () => applyPreset('my_band'));
-    tabOtherBand.addEventListener('click', () => applyPreset('other_band'));
-    document.getElementById('btnResetPreset').addEventListener('click', () => applyPreset(currentMode));
+    tabMyBand.addEventListener('click', () => applyBandPreset('my_band'));
+    tabOtherBand.addEventListener('click', () => applyBandPreset('other_band'));
+    document.getElementById('btnResetPreset').addEventListener('click', () => applyBandPreset(currentBandMode));
 
-    // When Target Band Name changes in Other Band Mode, auto-update headline and discSub if using default template
-    inputs.targetBand.addEventListener('input', () => {
-      if (currentMode === 'other_band') {
-        const bandName = inputs.targetBand.value || '골프 밴드';
-        inputs.subHead.value = `[${bandName}] 회원님을 위한 특별 제휴 프로모션`;
-        inputs.head.value = `[${bandName}]\n회원님 전용 단독 특급 우대 혜택!`;
-        inputs.discSub.value = `[${bandName}] 회원 인증 시 전 코스 즉시 우대 할인`;
+    bandInputs.targetBand.addEventListener('input', () => {
+      if (currentBandMode === 'other_band') {
+        const bandName = bandInputs.targetBand.value || '골프 밴드';
+        bandInputs.subHead.value = `[${bandName}] 회원님을 위한 특별 제휴 프로모션`;
+        bandInputs.head.value = `[${bandName}]\n회원님 전용 단독 특급 우대 혜택!`;
+        bandInputs.discSub.value = `[${bandName}] 회원 인증 시 전 코스 즉시 우대 할인`;
       }
-      updateLivePreview();
+      updateBandLivePreview();
     });
 
-    function updateLivePreview() {
-      const bandName = inputs.targetBand.value || '밴드';
+    function updateBandLivePreview() {
+      const bandName = bandInputs.targetBand.value || '밴드';
 
-      // Text updates
-      document.querySelectorAll('.out-shop').forEach(el => el.textContent = inputs.shop.value);
-      document.querySelectorAll('.out-subhead').forEach(el => el.textContent = inputs.subHead.value);
-      document.querySelectorAll('.out-head').forEach(el => el.innerHTML = inputs.head.value.replace(/\n/g, '<br/>'));
-      document.querySelectorAll('.out-top-badge').forEach(el => el.textContent = inputs.topBadge.value);
+      document.querySelectorAll('.out-shop').forEach(el => el.textContent = bandInputs.shop.value);
+      document.querySelectorAll('.out-subhead').forEach(el => el.textContent = bandInputs.subHead.value);
+      document.querySelectorAll('.out-head').forEach(el => el.innerHTML = bandInputs.head.value.replace(/\n/g, '<br/>'));
+      document.querySelectorAll('.out-top-badge').forEach(el => el.textContent = bandInputs.topBadge.value);
 
-      document.querySelectorAll('.out-disc').forEach(el => el.textContent = inputs.disc.value);
-      document.querySelectorAll('.out-disc-sub').forEach(el => el.textContent = inputs.discSub.value);
-      document.querySelectorAll('.out-disc-rate').forEach(el => el.textContent = inputs.discRate.value);
+      document.querySelectorAll('.out-disc').forEach(el => el.textContent = bandInputs.disc.value);
+      document.querySelectorAll('.out-disc-sub').forEach(el => el.textContent = bandInputs.discSub.value);
+      document.querySelectorAll('.out-disc-rate').forEach(el => el.textContent = bandInputs.discRate.value);
       
-      document.querySelectorAll('.out-event').forEach(el => el.textContent = inputs.event.value);
-      document.querySelectorAll('.out-event-sub').forEach(el => el.textContent = inputs.eventSub.value);
-      document.querySelectorAll('.out-event-badge').forEach(el => el.textContent = inputs.eventBadge.value);
+      document.querySelectorAll('.out-event').forEach(el => el.textContent = bandInputs.event.value);
+      document.querySelectorAll('.out-event-sub').forEach(el => el.textContent = bandInputs.eventSub.value);
+      document.querySelectorAll('.out-event-badge').forEach(el => el.textContent = bandInputs.eventBadge.value);
 
-      document.querySelectorAll('.out-bonus').forEach(el => el.textContent = inputs.bonus.value);
-      document.querySelectorAll('.out-hours').forEach(el => el.textContent = inputs.hours.value);
-      document.querySelectorAll('.out-phone').forEach(el => el.textContent = inputs.phone.value);
-      document.querySelectorAll('.out-addr').forEach(el => el.textContent = inputs.addr.value);
+      document.querySelectorAll('.out-bonus').forEach(el => el.textContent = bandInputs.bonus.value);
+      document.querySelectorAll('.out-hours').forEach(el => el.textContent = bandInputs.hours.value);
+      document.querySelectorAll('.out-phone').forEach(el => el.textContent = bandInputs.phone.value);
+      document.querySelectorAll('.out-addr').forEach(el => el.textContent = bandInputs.addr.value);
 
-      // Theme specific dynamic text
       document.querySelectorAll('.out-theme2-title').forEach(el => {
-        el.textContent = currentMode === 'other_band' ? `[${bandName}] × 광산골프 제휴 이벤트` : 'NAVER BAND MEMBER EVENT';
+        el.textContent = currentBandMode === 'other_band' ? `[${bandName}] × 광산골프 제휴 이벤트` : 'NAVER BAND MEMBER EVENT';
       });
 
       document.querySelectorAll('.out-theme3-badge').forEach(el => {
-        el.textContent = currentMode === 'other_band' ? `✨ [${bandName}] 제휴 SPECIAL ✨` : '✨ BAND SPECIAL EVENT ✨';
+        el.textContent = currentBandMode === 'other_band' ? `✨ [${bandName}] 제휴 SPECIAL ✨` : '✨ BAND SPECIAL EVENT ✨';
       });
 
-      // Toggle Discount
-      const showDisc = toggles.disc.checked;
-      inputs.disc.disabled = !showDisc;
-      inputs.discRate.disabled = !showDisc;
-      inputs.discSub.disabled = !showDisc;
-      wrappers.disc.classList.toggle('opacity-40', !showDisc);
-      wrappers.disc.classList.toggle('pointer-events-none', !showDisc);
-      document.querySelectorAll('.offer-disc').forEach(el => {
-        el.classList.toggle('hidden', !showDisc);
-      });
+      const showDisc = bandToggles.disc.checked;
+      bandInputs.disc.disabled = !showDisc;
+      bandInputs.discRate.disabled = !showDisc;
+      bandInputs.discSub.disabled = !showDisc;
+      bandWrappers.disc.classList.toggle('opacity-40', !showDisc);
+      bandWrappers.disc.classList.toggle('pointer-events-none', !showDisc);
+      document.querySelectorAll('.offer-disc').forEach(el => el.classList.toggle('hidden', !showDisc));
 
-      // Toggle Event
-      const showEvent = toggles.event.checked;
-      inputs.event.disabled = !showEvent;
-      inputs.eventBadge.disabled = !showEvent;
-      inputs.eventSub.disabled = !showEvent;
-      wrappers.event.classList.toggle('opacity-40', !showEvent);
-      wrappers.event.classList.toggle('pointer-events-none', !showEvent);
-      document.querySelectorAll('.offer-event').forEach(el => {
-        el.classList.toggle('hidden', !showEvent);
-      });
+      const showEvent = bandToggles.event.checked;
+      bandInputs.event.disabled = !showEvent;
+      bandInputs.eventBadge.disabled = !showEvent;
+      bandInputs.eventSub.disabled = !showEvent;
+      bandWrappers.event.classList.toggle('opacity-40', !showEvent);
+      bandWrappers.event.classList.toggle('pointer-events-none', !showEvent);
+      document.querySelectorAll('.offer-event').forEach(el => el.classList.toggle('hidden', !showEvent));
 
-      // Toggle Bonus
-      const showBonus = toggles.bonus.checked;
-      inputs.bonus.disabled = !showBonus;
-      wrappers.bonus.classList.toggle('opacity-40', !showBonus);
-      wrappers.bonus.classList.toggle('pointer-events-none', !showBonus);
-      document.querySelectorAll('.offer-bonus').forEach(el => {
-        el.classList.toggle('hidden', !showBonus);
-      });
+      const showBonus = bandToggles.bonus.checked;
+      bandInputs.bonus.disabled = !showBonus;
+      bandWrappers.bonus.classList.toggle('opacity-40', !showBonus);
+      bandWrappers.bonus.classList.toggle('pointer-events-none', !showBonus);
+      document.querySelectorAll('.offer-bonus').forEach(el => el.classList.toggle('hidden', !showBonus));
     }
 
-    Object.values(inputs).forEach(input => {
-      input.addEventListener('input', updateLivePreview);
-    });
+    Object.values(bandInputs).forEach(input => input.addEventListener('input', updateBandLivePreview));
+    Object.values(bandToggles).forEach(chk => chk.addEventListener('change', updateBandLivePreview));
 
-    Object.values(toggles).forEach(chk => {
-      chk.addEventListener('change', updateLivePreview);
-    });
-
-    // Theme Switcher
+    // Band Theme Switcher
     const styleBtns = document.querySelectorAll('.style-btn');
-    const themes = {
+    const bandThemes = {
       style1: document.getElementById('theme1'),
       style2: document.getElementById('theme2'),
       style3: document.getElementById('theme3'),
       style4: document.getElementById('theme4')
     };
-
-    let currentTheme = 'style1';
+    let currentBandTheme = 'style1';
 
     styleBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -730,25 +1190,119 @@
         btn.classList.add('bg-emerald-600/20', 'border-emerald-500', 'text-emerald-300');
         btn.classList.remove('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
 
-        const selectedTheme = btn.getAttribute('data-theme');
-        currentTheme = selectedTheme;
-        Object.values(themes).forEach(t => t.classList.add('hidden'));
-        themes[selectedTheme].classList.remove('hidden');
+        const selected = btn.getAttribute('data-theme');
+        currentBandTheme = selected;
+        Object.values(bandThemes).forEach(t => t.classList.add('hidden'));
+        bandThemes[selected].classList.remove('hidden');
       });
     });
 
-    // Download Poster as PNG
-    document.getElementById('btnDownloadPoster').addEventListener('click', () => {
-      const activeElement = themes[currentTheme];
-      const modePrefix = currentMode === 'my_band' ? '광산골프밴드' : `타밴드제휴_${inputs.targetBand.value}`;
-      
-      html2canvas(activeElement, {
-        scale: 2, // High resolution
+    // ==========================================
+    // 4. CHANNEL 2 (INSTAGRAM) LOGIC
+    // ==========================================
+    const instaInputs = {
+      page: document.getElementById('inputInstaPage'),
+      tag: document.getElementById('inputInstaTag'),
+      main: document.getElementById('inputInstaMain'),
+      sub: document.getElementById('inputInstaSub'),
+      p1: document.getElementById('inputInstaPoint1'),
+      p2: document.getElementById('inputInstaPoint2'),
+      p3: document.getElementById('inputInstaPoint3'),
+      acc: document.getElementById('inputInstaAccount')
+    };
+
+    function updateInstaLivePreview() {
+      document.querySelectorAll('.out-insta-page').forEach(el => el.textContent = instaInputs.page.value);
+      document.querySelectorAll('.out-insta-tag').forEach(el => el.textContent = instaInputs.tag.value);
+      document.querySelectorAll('.out-insta-main').forEach(el => el.innerHTML = instaInputs.main.value.replace(/\n/g, '<br/>'));
+      document.querySelectorAll('.out-insta-sub').forEach(el => el.textContent = instaInputs.sub.value);
+      document.querySelectorAll('.out-insta-p1').forEach(el => el.textContent = instaInputs.p1.value);
+      document.querySelectorAll('.out-insta-p2').forEach(el => el.textContent = instaInputs.p2.value);
+      document.querySelectorAll('.out-insta-p3').forEach(el => el.textContent = instaInputs.p3.value);
+      document.querySelectorAll('.out-insta-acc').forEach(el => el.textContent = instaInputs.acc.value);
+    }
+
+    Object.values(instaInputs).forEach(input => input.addEventListener('input', updateInstaLivePreview));
+
+    // Insta Theme Switcher
+    const instaStyleBtns = document.querySelectorAll('.insta-style-btn');
+    const instaThemes = {
+      insta1: document.getElementById('instaTheme1'),
+      insta2: document.getElementById('instaTheme2'),
+      insta3: document.getElementById('instaTheme3'),
+      insta4: document.getElementById('instaTheme4')
+    };
+    let currentInstaTheme = 'insta1';
+
+    instaStyleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        instaStyleBtns.forEach(b => {
+          b.classList.remove('bg-pink-600/20', 'border-pink-500', 'text-pink-300');
+          b.classList.add('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
+        });
+        btn.classList.add('bg-pink-600/20', 'border-pink-500', 'text-pink-300');
+        btn.classList.remove('border-slate-800', 'bg-slate-950/60', 'text-slate-400');
+
+        const selected = btn.getAttribute('data-instatheme');
+        currentInstaTheme = selected;
+        Object.values(instaThemes).forEach(t => t.classList.add('hidden'));
+        instaThemes[selected].classList.remove('hidden');
+      });
+    });
+
+    // ==========================================
+    // 5. CHANNEL 3 (INFLUENCER) LOGIC
+    // ==========================================
+    const infInputs = {
+      name: document.getElementById('inputInfName'),
+      title: document.getElementById('inputInfTitle'),
+      greeting: document.getElementById('inputInfGreeting'),
+      b1: document.getElementById('inputInfBenefit1'),
+      b2: document.getElementById('inputInfBenefit2'),
+      b3: document.getElementById('inputInfBenefit3'),
+      mission: document.getElementById('inputInfMission'),
+      contact: document.getElementById('inputInfContact')
+    };
+
+    function updateInfLivePreview() {
+      document.querySelectorAll('.out-inf-name').forEach(el => el.textContent = `Dear. ${infInputs.name.value} 님`);
+      document.querySelectorAll('.out-inf-title').forEach(el => el.innerHTML = infInputs.title.value.replace(/\n/g, '<br/>'));
+      document.querySelectorAll('.out-inf-greeting').forEach(el => el.textContent = infInputs.greeting.value);
+      document.querySelectorAll('.out-inf-b1').forEach(el => el.textContent = infInputs.b1.value);
+      document.querySelectorAll('.out-inf-b2').forEach(el => el.textContent = infInputs.b2.value);
+      document.querySelectorAll('.out-inf-b3').forEach(el => el.textContent = infInputs.b3.value);
+      document.querySelectorAll('.out-inf-mission').forEach(el => el.textContent = infInputs.mission.value);
+      document.querySelectorAll('.out-inf-contact').forEach(el => el.textContent = infInputs.contact.value);
+    }
+
+    Object.values(infInputs).forEach(input => input.addEventListener('input', updateInfLivePreview));
+
+    // ==========================================
+    // 6. GLOBAL HEADER ACTIONS (COPY & DOWNLOAD)
+    // ==========================================
+    document.getElementById('btnHeaderDownload').addEventListener('click', () => {
+      let targetElement;
+      let filename;
+
+      if (currentChannel === 'band') {
+        targetElement = bandThemes[currentBandTheme];
+        const modePrefix = currentBandMode === 'my_band' ? '광산골프밴드' : `타밴드제휴_${bandInputs.targetBand.value}`;
+        filename = `포스터_${modePrefix}_${currentBandTheme}.png`;
+      } else if (currentChannel === 'insta') {
+        targetElement = instaThemes[currentInstaTheme];
+        filename = `인스타카드뉴스_${currentInstaTheme}.png`;
+      } else if (currentChannel === 'influencer') {
+        targetElement = document.getElementById('influencerCard');
+        filename = `VIP초청장_${infInputs.name.value}.png`;
+      }
+
+      html2canvas(targetElement, {
+        scale: 2,
         useCORS: true,
         backgroundColor: null
       }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `포스터_${modePrefix}_${currentTheme}.png`;
+        link.download = filename;
         link.href = canvas.toDataURL('image/png');
         link.click();
       }).catch(err => {
@@ -756,41 +1310,34 @@
       });
     });
 
-    // Copy Band Post Text
-    document.getElementById('btnCopyText').addEventListener('click', () => {
-      let benefitsText = '';
-      let benefitNum = 1;
-      
-      if (toggles.disc.checked) {
-        benefitsText += `✨ 혜택 ${benefitNum++} [${inputs.discRate.value} 할인]: ${inputs.disc.value}\n   (${inputs.discSub.value})\n`;
-      }
-      if (toggles.event.checked) {
-        benefitsText += `✨ 혜택 ${benefitNum++} [${inputs.eventBadge.value}]: ${inputs.event.value}\n   (${inputs.eventSub.value})\n`;
-      }
-      if (toggles.bonus.checked) {
-        benefitsText += `🎁 보너스 혜택: ${inputs.bonus.value}\n`;
-      }
+    document.getElementById('btnHeaderCopy').addEventListener('click', () => {
+      if (currentChannel === 'band') {
+        let benefitsText = '';
+        let benefitNum = 1;
+        if (bandToggles.disc.checked) benefitsText += `✨ 혜택 ${benefitNum++} [${bandInputs.discRate.value} 할인]: ${bandInputs.disc.value}\n   (${bandInputs.discSub.value})\n`;
+        if (bandToggles.event.checked) benefitsText += `✨ 혜택 ${benefitNum++} [${bandInputs.eventBadge.value}]: ${bandInputs.event.value}\n   (${bandInputs.eventSub.value})\n`;
+        if (bandToggles.bonus.checked) benefitsText += `🎁 보너스 혜택: ${bandInputs.bonus.value}\n`;
 
-      let textTemplate = '';
-      if (currentMode === 'my_band') {
-        textTemplate = `[📢 광산골프 네이버 밴드 회원 단독 특급 혜택 안내!]
+        let text = '';
+        if (currentBandMode === 'my_band') {
+          text = `[📢 광산골프 네이버 밴드 회원 단독 특급 혜택 안내!]
 
-안녕하세요, ${inputs.shop.value}입니다! ⛳
+안녕하세요, ${bandInputs.shop.value}입니다! ⛳
 저희 네이버 밴드에 가입해 주신 회원님들만을 위한 특별 프로모션을 진행합니다!
 
 ${benefitsText}
 야간 12시까지 환하게 밝혀진 숏게임장에서 어프로치 & 퍼팅 실력을 완벽하게 업그레이드해보세요!
 
 ⏰ 영업시간:
-${inputs.hours.value}
+${bandInputs.hours.value}
 
-📍 위치: ${inputs.addr.value}
-📞 예약 및 문의: ${inputs.phone.value}
+📍 위치: ${bandInputs.addr.value}
+📞 예약 및 문의: ${bandInputs.phone.value}
 
 밴드 회원님들의 많은 방문 바랍니다! 감사합니다. 😊`;
-      } else {
-        const bandName = inputs.targetBand.value || '골프 밴드';
-        textTemplate = `[📢 ${bandName} 회원님들을 위한 광산골프 특별 제휴 혜택 안내!]
+        } else {
+          const bandName = bandInputs.targetBand.value || '골프 밴드';
+          text = `[📢 ${bandName} 회원님들을 위한 광산골프 특별 제휴 혜택 안내!]
 
 안녕하세요, [${bandName}] 골퍼 회원님들! ⛳
 광산골프 어프로치 숏게임 연습장에서 [${bandName}] 회원님들을 위해 단독 특별 제휴 프로모션을 준비했습니다!
@@ -801,24 +1348,80 @@ ${benefitsText}
 실제 필드 감각의 천연 잔디 어프로치 & 퍼팅 숏게임장(야간 12시까지 조명 완비)에서 타수를 줄여보세요!
 
 ⏰ 영업시간:
-${inputs.hours.value}
+${bandInputs.hours.value}
 
-📍 위치: ${inputs.addr.value}
-📞 예약 및 문의: ${inputs.phone.value}
+📍 위치: ${bandInputs.addr.value}
+📞 예약 및 문의: ${bandInputs.phone.value}
 
 [${bandName}] 회원님들의 많은 방문과 성원 부탁드립니다! 감사합니다. 🏌️‍♂️⛳`;
-      }
+        }
 
-      navigator.clipboard.writeText(textTemplate).then(() => {
-        const bandName = currentMode === 'my_band' ? '광산골프 밴드' : `[${inputs.targetBand.value}] 제휴`;
-        alert(`✅ ${bandName} 홍보 게시글 본문이 클립보드에 복사되었습니다!\n밴드 글 작성 시 붙여넣기(Ctrl+V) 하세요.`);
-      }).catch(() => {
-        alert('복사에 실패했습니다.');
-      });
+        navigator.clipboard.writeText(text).then(() => {
+          alert('✅ 밴드 홍보 게시글 본문이 클립보드에 복사되었습니다!\n밴드 글 작성 시 붙여넣기(Ctrl+V) 하세요.');
+        });
+
+      } else if (currentChannel === 'insta') {
+        const text = `⛳ ${instaInputs.main.value.replace(/\n/g, ' ')}
+
+${instaInputs.sub.value}
+광주·전남 골퍼들의 숏게임 타수 줄이기 필수 코스! 🏌️‍♂️
+
+🔹 ${instaInputs.p1.value}
+🔹 ${instaInputs.p2.value}
+🔹 ${instaInputs.p3.value}
+
+퇴근 후 야간 라운딩 전 실전 감각을 끌어올려보세요! 🌙✨
+
+📍 위치: 광산구 동곡상정길 42
+📞 문의 및 예약: 062-454-7878
+📱 계정: @gwangsan_golf
+
+#광산골프 #광산골프연습장 #어프로치연습 #숏게임장 #광주골프연습장 #골프숏게임 #골린이 #골프스타그램 #광주골프 #골프스윙 #필드레슨 #야간골프연습`;
+
+        navigator.clipboard.writeText(text).then(() => {
+          alert('✅ 인스타그램 피드 캡션 및 해시태그가 복사되었습니다!\n인스타 업로드 시 붙여넣기(Ctrl+V) 하세요.');
+        });
+
+      } else if (currentChannel === 'influencer') {
+        const text = `[광산골프 어프로치 숏게임장 VIP 체험단 초청 제안서]
+
+안녕하세요, ${infInputs.name.value} 님! ⛳
+광산골프 어프로치 숏게임 연습장 마케팅 담당자입니다.
+
+평소 ${infInputs.name.value} 님의 멋지고 유익한 골프 피드와 영상을 매우 인상 깊게 보며 응원하고 있습니다.
+저희 광산골프에서 ${infInputs.name.value} 님을 VIP 인플루언서로 정중히 모시고자 연락드렸습니다.
+
+광산골프는 실제 필드 감각의 천연잔디 어프로치(10~70m), 벙커, 퍼팅 전용 코스를 갖추고 있으며, 야간 12시까지 환한 조명 아래서 편안하게 숏게임을 훈련하실 수 있는 실전 숏게임 연습장입니다.
+
+🎁 [VIP 인플루언서 제공 혜택]
+1. ${infInputs.b1.value}
+2. ${infInputs.b2.value}
+3. ${infInputs.b3.value}
+
+📝 [체험 미션]
+- ${infInputs.mission.value}
+
+📍 [위치 및 오시는 길]
+- 주소: 광주광역시 광산구 동곡상정길 42 (광산골프)
+- 영업시간: 월~토 08:00 ~ 24:00 / 일 08:00 ~ 18:00
+
+편하신 일정에 맞춰 편안하게 방문하실 수 있도록 예약 지원해 드리겠습니다.
+참여 의향이 있으시면 본 DM 또는 메일로 편하게 회신 부탁드립니다.
+
+감사합니다. 즐거운 하루 되세요! 😊🏌️‍♂️`;
+
+        navigator.clipboard.writeText(text).then(() => {
+          alert(`✅ ${infInputs.name.value} 님 대상 섭외 DM/메일 전문이 복사되었습니다!\n인스타 DM이나 이메일에 붙여넣기(Ctrl+V) 하세요.`);
+        });
+      }
     });
 
-    // Initial load
-    applyPreset('my_band');
+    // Initial setups
+    checkAuth();
+    applyBandPreset('my_band');
+    updateInstaLivePreview();
+    updateInfLivePreview();
   </script>
 </body>
 </html>
+
